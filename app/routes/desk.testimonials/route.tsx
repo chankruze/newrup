@@ -5,7 +5,7 @@ import { Edit, MoreVertical } from "lucide-react";
 import { ActionButton } from "~/components/action-button";
 import { ErrorBoundaryComponent } from "~/components/error-boundary";
 import { Separator } from "~/components/ui/separator";
-import { getAllSections } from "~/dao/sections.server";
+import { getAllTestimonials } from "~/dao/testimonials.server";
 import { requireUserId } from "~/lib/session.server";
 import { cn } from "~/lib/utils";
 import { SectionListItem } from "./section-list-item";
@@ -13,17 +13,18 @@ import { SectionListItem } from "./section-list-item";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await requireUserId(request);
 
-  const _sectionsQuery = await getAllSections();
+  const _testimonialsQuery = await getAllTestimonials();
 
-  if (_sectionsQuery.ok) return json({ sections: _sectionsQuery.sections });
+  if (_testimonialsQuery.ok)
+    return json({ testimonials: _testimonialsQuery.testimonials });
 
-  return json({ userId, sections: [] });
+  return json({ userId, testimonials: [] });
 };
 
 export default function SectionsLayout() {
   const location = useLocation();
-  const hideParent = location.pathname !== "/desk/sections";
-  const { sections } = useLoaderData<typeof loader>();
+  const hideParent = location.pathname !== "/desk/testimonials";
+  const { testimonials } = useLoaderData<typeof loader>();
 
   return (
     <div className="flex h-full overflow-hidden">
@@ -33,7 +34,7 @@ export default function SectionsLayout() {
         })}
       >
         <div className="flex items-center justify-between p-2">
-          <p className="font-outfit font-medium">Sections</p>
+          <p className="font-outfit font-medium">Testimonials</p>
           <div className="flex items-center">
             <Link to="new">
               <ActionButton icon={Edit} tooltip="Add section" />
@@ -42,19 +43,19 @@ export default function SectionsLayout() {
           </div>
         </div>
         <Separator />
-        {sections.length > 0 ? (
+        {testimonials.length > 0 ? (
           <div className="flex-1 space-y-1 overflow-y-auto">
-            {sections.map((section) => (
+            {testimonials.map((testimony) => (
               <SectionListItem
-                key={section._id.toString()}
-                title={section.title}
-                to={section._id.toString()}
+                key={testimony._id.toString()}
+                title={testimony.name}
+                to={testimony._id.toString()}
               />
             ))}
           </div>
         ) : (
           <div className="h-full flex justify-center items-center p-2">
-            <p>No sections found</p>
+            <p>No testimonials found</p>
           </div>
         )}
       </div>

@@ -6,13 +6,13 @@ import { SITE_DESCRIPTION, SITE_TITLE } from "~/consts";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: `Sections / ${SITE_TITLE}` },
-    { name: "og:title", content: `Sections / ${SITE_TITLE}` },
+    { title: `New Section / ${SITE_TITLE}` },
+    { name: "og:title", content: `New Section / ${SITE_TITLE}` },
     { name: "description", content: SITE_DESCRIPTION },
   ];
 };
 
-export default function SectionsIndex() {
+export default function SectionNewPage() {
   const navigate = useNavigate();
 
   const back = () => navigate("/desk/sections");
@@ -20,7 +20,7 @@ export default function SectionsIndex() {
   return (
     <div className="h-full p-2">
       <div className="flex items-center justify-between">
-        <div>Title</div>
+        <div>New Section</div>
         <ActionButton tooltip="close" icon={X} action={back} />
       </div>
     </div>

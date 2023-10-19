@@ -4,6 +4,8 @@ import { client } from "~/lib/db.server";
 import { log } from "~/lib/logger.server";
 import { addPassword, getPasswordUserId } from "./passwords.server";
 
+const USERS_COLLECTION = "users";
+
 export type UserInfo = {
   name: string;
   email: string;
@@ -19,7 +21,7 @@ export type User = WithId<Document> &
 export const getUser = async (email: string) => {
   const _db = await client.db(process.env.MOBAZZAR_NS);
   // find user by email
-  const _user = await _db.collection("users").findOne({
+  const _user = await _db.collection(USERS_COLLECTION).findOne({
     email,
   });
   // return user
@@ -31,9 +33,10 @@ export const addUser = async (userInfo: UserInfo) => {
 
   // create new user
   try {
-    const _user = await _db.collection("users").insertOne({
+    const _user = await _db.collection(USERS_COLLECTION).insertOne({
       email: userInfo.email,
       name: userInfo.name,
+      role: "VIEWER",
       createdAt: new Date(),
       updatedAt: new Date(),
     });

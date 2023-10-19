@@ -164,7 +164,7 @@ export default function LoginPage() {
                 <ErrorDiv>{_action.error.fieldErrors.email.at(0)}</ErrorDiv>
               ) : null}
             </div>
-            <div className="relative grid w-full items-center gap-2">
+            <div className="grid w-full items-center gap-2">
               <Label htmlFor="password">Password</Label>
               <Input
                 type="password"

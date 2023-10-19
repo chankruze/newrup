@@ -7,7 +7,7 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
-import { updateSection } from "~/dao/sections.server";
+import { updateTestimony } from "~/dao/testimonials.server";
 import { uploadHandler } from "~/lib/upload.server";
 import { extractFileNameFromUrl } from "~/utils/extract-filename";
 import type { SectionLoader } from "./desk.sections.$id";
@@ -25,7 +25,10 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
   switch (__action) {
     case "save": {
-      const { ok, error } = await updateSection(params.id as string, formData);
+      const { ok, error } = await updateTestimony(
+        params.id as string,
+        formData
+      );
 
       if (ok)
         return json({
@@ -48,9 +51,9 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   }
 };
 
-export default function SectionEditPage() {
-  const { section } = useRouteLoaderData<SectionLoader>(
-    "routes/desk.sections.$id"
+export default function TestimonyEditPage() {
+  const { testimony } = useRouteLoaderData<SectionLoader>(
+    "routes/desk.testimonials.$id"
   );
 
   const { state } = useNavigation();
@@ -58,9 +61,9 @@ export default function SectionEditPage() {
   const busy = state === "submitting";
 
   const [formData, setFormData] = useState({
-    title: section.title || "",
-    subtitle: section.subtitle || "",
-    description: section.description || "",
+    name: testimony.name || "",
+    position: testimony.position || "",
+    content: testimony.content || "",
   });
 
   const onChangeHandler = (
@@ -81,37 +84,37 @@ export default function SectionEditPage() {
           encType="multipart/form-data"
         >
           <div className="grid w-full items-center gap-2">
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="name">Name</Label>
             <Input
               type="text"
-              id="title"
-              name="title"
+              id="name"
+              name="name"
               onChange={onChangeHandler}
-              value={formData.title}
+              value={formData.name}
             />
           </div>
           <div className="grid w-full items-center gap-2">
-            <Label htmlFor="subtitle">Sub Title</Label>
+            <Label htmlFor="position">Position</Label>
             <Input
               type="text"
-              id="subtitle"
-              name="subtitle"
+              id="position"
+              name="position"
               onChange={onChangeHandler}
-              value={formData.subtitle}
+              value={formData.position}
             />
           </div>
           <div className="grid w-full items-center gap-2">
             <Label htmlFor="image">Image</Label>
-            {section.image ? (
+            {testimony.image ? (
               <p className="text-xs line-clamp-1">
                 Current:{" "}
                 <a
-                  href={section.image}
+                  href={testimony.image}
                   target="_blank"
                   rel="noreferrer"
                   className="italic underline text-blue-500"
                 >
-                  {extractFileNameFromUrl(section.image)}
+                  {extractFileNameFromUrl(testimony.image)}
                 </a>
               </p>
             ) : null}
@@ -125,12 +128,12 @@ export default function SectionEditPage() {
             />
           </div>
           <div className="grid w-full items-center gap-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="content">Content</Label>
             <Textarea
-              id="description"
-              name="description"
+              id="content"
+              name="content"
               onChange={onChangeHandler}
-              value={formData.description}
+              value={formData.content}
             />
           </div>
           <div>

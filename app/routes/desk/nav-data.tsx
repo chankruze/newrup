@@ -1,4 +1,4 @@
-import { Home, Mailbox, Settings, Text } from "lucide-react";
+import { Home, Mailbox, Quote, Settings, Text } from "lucide-react";
 import type { BottomNavItemProps } from "./bottom-nav-item";
 import type { NavItemProps } from "./nav-item";
 
@@ -14,6 +14,11 @@ export const navLinks: NavLinkType[] = [
     to: "sections",
     label: "Sections",
     icon: Text,
+  },
+  {
+    to: "testimonials",
+    label: "Testimonials",
+    icon: Quote,
   },
   {
     to: "mailbox",

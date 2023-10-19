@@ -1,59 +1,56 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import {
-  NavLink,
-  Outlet,
-  useLoaderData,
-  useNavigate
-} from "@remix-run/react";
+import { NavLink, Outlet, useLoaderData, useNavigate } from "@remix-run/react";
 import { MoreVertical, X } from "lucide-react";
 import { ActionButton } from "~/components/action-button";
 import { SITE_TITLE } from "~/consts";
-import { getSection } from "~/dao/sections.server";
+import { getTestimony } from "~/dao/testimonials.server";
 import { cn } from "~/lib/utils";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { id } = params;
 
   if (id) {
-    const { ok, section } = await getSection(id);
+    const { ok, testimony } = await getTestimony(id);
 
-    if (ok) return json({ section });
+    if (ok) return json({ testimony });
 
-    return json({ section: null });
+    return json({ testimony: null });
   }
 
-  return json({ section: null });
+  return json({ testimony: null });
 };
 
 export type SectionLoader = typeof loader;
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
-    { title: `${data?.section?.title} / ${SITE_TITLE}` },
+    { title: `${data?.testimony?.name} / ${SITE_TITLE}` },
     {
       property: "og:title",
-      content: `${data?.section?.title} / ${SITE_TITLE}`,
+      content: `${data?.testimony?.name} / ${SITE_TITLE}`,
     },
-    { name: "description", content: `${data?.section?.subtitle}` },
+    { name: "description", content: `${data?.testimony?.content}` },
   ];
 };
 
-export default function SectionPage() {
-  const { section } = useLoaderData<typeof loader>();
+export default function TestimonyPage() {
+  const { testimony } = useLoaderData<typeof loader>();
 
   const navigate = useNavigate();
 
-  const back = () => navigate("/desk/sections");
+  const back = () => navigate("/desk/testimonials");
 
-  if (section) {
-    const lastUpdated = new Date(section.updatedAt);
+  if (testimony) {
+    const lastUpdated = new Date(testimony.updatedAt);
 
     return (
       <div className="flex h-full w-full flex-col overflow-hidden">
         <div className="space-y-1 border-b p-2">
           <div className="flex items-center justify-between">
-            <p className="font-outfit font-medium">{section.title}</p>
+            <p className="font-outfit font-medium">
+              {testimony.name}'s Testimony
+            </p>
             <div className="flex items-center">
               <ActionButton tooltip="Show menu" icon={MoreVertical} />
               <ActionButton tooltip="close" icon={X} action={back} />
@@ -128,8 +125,8 @@ export default function SectionPage() {
   }
 
   return (
-    <div className="h-full w-full p-2">
-      <p>Section not found!</p>
+    <div className="h-full w-full p-2 grid place-content-center">
+      <p>Testimony not found!</p>
     </div>
   );
 }

@@ -14,7 +14,7 @@ export const ErrorBoundaryComponent = () => {
             {error.statusText}
           </span>
         </div>
-        <pre className="rounded-lg bg-primary/5 p-3">{error.data}</pre>
+        <p className="rounded-lg bg-primary/5 p-3">{error.data}</p>
       </div>
     );
   } else if (error instanceof Error) {
