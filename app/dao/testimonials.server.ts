@@ -32,7 +32,7 @@ export const createTestimony = async (testimonyInfo: FormData) => {
   const sectionSchema = z.object({
     name: z.string().min(1, "Name must not be empty."),
     content: z.string().min(1, "Content must not be empty."),
-    image: z.any(),
+    image: z.any().nullable(),
     position: z.string().min(1, "Position must not be empty."),
   });
 

@@ -15,13 +15,6 @@ export default function TestimonyPreviewPage() {
 
   return (
     <div className="h-full w-full grid place-items-center overflow-y-auto p-4">
-      {/* <div className="flex items-start flex-wrap justify-between gap-1">
-        <div className="space-y-1">
-          <p className="font-medium font-outfit">{testimony.name}</p>
-          <p className="text-sm text-muted-foreground">{testimony.position}</p>
-        </div>
-      </div>
-      <div>{testimony.content}</div> */}
       <Card className="w-[350px] text-center">
         <CardHeader>
           <CardTitle className="font-outfit">{testimony.name}</CardTitle>

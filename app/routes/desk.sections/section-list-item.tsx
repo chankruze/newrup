@@ -10,7 +10,7 @@ type SectionListItemProps = {
 export const SectionListItem = ({ to, title }: SectionListItemProps) => {
   return (
     <NavLink
-      to={`${to}/edit`}
+      to={to}
       className={({ isActive, isPending }) =>
         cn(
           "line-clamp-1 flex flex-1 items-center justify-between gap-3 px-4 py-3 font-outfit transition-all duration-300",

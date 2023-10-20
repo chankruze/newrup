@@ -57,7 +57,7 @@ export const updateCarousel = async (
   const carouselSchema = z.object({
     name: z.string().min(1, "Name must not be empty."),
     description: z.string().min(1, "Description must not be empty."),
-    images: z.array(z.string()),
+    images: z.array(z.any().nullable()),
   });
 
   // validate form data

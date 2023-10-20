@@ -9,11 +9,13 @@ const CERTIFICATIONS_COLLECTION = "certifications";
 export const getCertification = async (id: string) => {
   const _db = await client.db(process.env.NEWRUP_DB);
 
-  const _mail = await _db.collection(CERTIFICATIONS_COLLECTION).findOne({
-    _id: new ObjectId(id),
-  });
+  const _certification = await _db
+    .collection(CERTIFICATIONS_COLLECTION)
+    .findOne({
+      _id: new ObjectId(id),
+    });
 
-  return { ok: true, mail: _mail };
+  return { ok: true, certification: _certification };
 };
 
 export const getAllCertifications = async () => {
@@ -31,39 +33,43 @@ export const getAllCertifications = async () => {
 export type CertificationInfo = {
   name: string;
   description: string;
-  images: string;
+  thumbnail: string;
+  link: string;
 };
 
-export const createCertification = async (mailInfo: CertificationInfo) => {
+export const createCertification = async (
+  certificationInfo: CertificationInfo
+) => {
   const _db = await client.db(process.env.NEWRUP_DB);
 
   try {
-    const _mail = await _db.collection(CERTIFICATIONS_COLLECTION).insertOne({
-      ...mailInfo,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
-    return { ok: true, id: _mail.insertedId };
+    const _certification = await _db
+      .collection(CERTIFICATIONS_COLLECTION)
+      .insertOne({
+        ...certificationInfo,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+    return { ok: true, id: _certification.insertedId };
   } catch (error) {
     log.e(error);
-    return { ok: false, error: "Unable to add new mail" };
+    return { ok: false, error: "Unable to add new certification" };
   }
 };
 
 export const updateCertification = async (
-  mailId: string,
-  mailInfo: FormData
+  certificationId: string,
+  formData: FormData
 ) => {
-  const mailSchema = z.object({
-    subject: z.string().min(1, "Subject must not be empty."),
+  const certificationSchema = z.object({
     name: z.string().min(1, "Name must not be empty."),
-    email: z.string().min(1, "Name must not be empty.").email(),
-    phone: z.string().min(1, "Phone must not be empty."),
-    message: z.string().min(1, "Message must not be empty."),
+    description: z.string().min(1, "Description must not be empty."),
+    image: z.any().nullable(),
+    link: z.string().min(1, "Link must not be empty."),
   });
 
   // validate form data
-  const _validation = mailSchema.safeParse(formToJSON(mailInfo));
+  const _validation = certificationSchema.safeParse(formToJSON(formData));
   // send error data in response
   if (!_validation.success) {
     const errors = _validation.error.flatten();
@@ -79,64 +85,63 @@ export const updateCertification = async (
   // Create an empty update operation
   const updatedRecord: Record<string, string> = {};
 
-  if (_validation.data.subject !== undefined) {
-    updatedRecord.subject = _validation.data.subject;
-  }
-
   if (_validation.data.name !== undefined) {
     updatedRecord.name = _validation.data.name;
   }
 
-  if (_validation.data.email !== undefined) {
-    updatedRecord.email = _validation.data.email;
+  if (_validation.data.description !== undefined) {
+    updatedRecord.description = _validation.data.description;
   }
 
-  if (_validation.data.phone !== undefined) {
-    updatedRecord.phone = _validation.data.phone;
+  if (typeof _validation.data.image === "string") {
+    updatedRecord.thumbnail = _validation.data.image;
   }
 
-  if (_validation.data.message !== undefined) {
-    updatedRecord.message = _validation.data.message;
+  if (_validation.data.link !== undefined) {
+    updatedRecord.link = _validation.data.link;
   }
 
   try {
     const updateQuery = await _db
       .collection(CERTIFICATIONS_COLLECTION)
-      .updateOne({ _id: new ObjectId(mailId) }, { $set: updatedRecord });
+      .updateOne(
+        { _id: new ObjectId(certificationId) },
+        { $set: updatedRecord }
+      );
 
     if (updateQuery.matchedCount === 0) {
-      return { error: "No mail found with that id." };
+      return { error: "No certification found with that id." };
     }
     return { ok: true };
   } catch (error) {
     log.e(error);
-    return { ok: false, error: "Unable to update that mail." };
+    return { ok: false, error: "Unable to update that certification." };
   }
 };
 
-export const deleteCertification = async (mailId: string) => {
+export const deleteCertification = async (certificationId: string) => {
   const _db = await client.db(process.env.NEWRUP_DB);
 
   try {
     const deleteQuery = await _db
       .collection(CERTIFICATIONS_COLLECTION)
-      .deleteOne({ _id: new ObjectId(mailId) });
+      .deleteOne({ _id: new ObjectId(certificationId) });
 
     if (deleteQuery.deletedCount === 0) {
       return {
         ok: false,
-        error: `Unable to delete mail`,
+        error: `Unable to delete certification`,
       };
     }
     return {
       ok: true,
-      message: `Certification [id: ${mailId.toString()}] deleted.`,
+      message: `Certification [id: ${certificationId.toString()}] deleted.`,
     };
   } catch (error) {
     log.e(error);
     return {
       ok: false,
-      error: `Unable to delete that mail.`,
+      error: `Unable to delete that certification.`,
     };
   }
 };

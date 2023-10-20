@@ -2,7 +2,7 @@ import type { ActionFunctionArgs } from "@remix-run/node";
 import { json, unstable_parseMultipartFormData } from "@remix-run/node";
 import { Form, useNavigation, useRouteLoaderData } from "@remix-run/react";
 import type { ChangeEvent } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
@@ -71,6 +71,12 @@ export default function SectionEditPage() {
       [e.target.name]: e.target.value,
     }));
   };
+
+  useEffect(() => {
+    setFormData({
+      ...section,
+    });
+  }, [section]);
 
   return (
     <div className="h-full w-full p-2">

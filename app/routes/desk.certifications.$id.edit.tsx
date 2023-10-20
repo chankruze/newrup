@@ -2,15 +2,15 @@ import type { ActionFunctionArgs } from "@remix-run/node";
 import { json, unstable_parseMultipartFormData } from "@remix-run/node";
 import { Form, useNavigation, useRouteLoaderData } from "@remix-run/react";
 import type { ChangeEvent } from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
-import { updateTestimony } from "~/dao/testimonials.server";
+import { updateCertification } from "~/dao/certifications.server";
 import { uploadHandler } from "~/lib/upload.server";
 import { extractFileNameFromUrl } from "~/utils/extract-filename";
-import type { TestimonyLoader } from "./desk.testimonials.$id";
+import type { CertificationLoader } from "./desk.certifications.$id";
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
   const formData = await unstable_parseMultipartFormData(
@@ -25,7 +25,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
   switch (__action) {
     case "save": {
-      const { ok, error } = await updateTestimony(
+      const { ok, error } = await updateCertification(
         params.id as string,
         formData
       );
@@ -51,9 +51,9 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   }
 };
 
-export default function TestimonyEditPage() {
-  const { testimony } = useRouteLoaderData<TestimonyLoader>(
-    "routes/desk.testimonials.$id"
+export default function CertificationEditPage() {
+  const { certification } = useRouteLoaderData<CertificationLoader>(
+    "routes/desk.certifications.$id"
   );
 
   const { state } = useNavigation();
@@ -61,9 +61,9 @@ export default function TestimonyEditPage() {
   const busy = state === "submitting";
 
   const [formData, setFormData] = useState({
-    name: testimony.name || "",
-    position: testimony.position || "",
-    content: testimony.content || "",
+    name: certification.name || "",
+    description: certification.description || "",
+    link: certification.link || "",
   });
 
   const onChangeHandler = (
@@ -74,12 +74,6 @@ export default function TestimonyEditPage() {
       [e.target.name]: e.target.value,
     }));
   };
-
-  useEffect(() => {
-    setFormData({
-      ...testimony,
-    });
-  }, [testimony]);
 
   return (
     <div className="h-full w-full p-2">
@@ -100,27 +94,27 @@ export default function TestimonyEditPage() {
             />
           </div>
           <div className="grid w-full items-center gap-2">
-            <Label htmlFor="position">Position</Label>
+            <Label htmlFor="link">Link</Label>
             <Input
               type="text"
-              id="position"
-              name="position"
+              id="link"
+              name="link"
               onChange={onChangeHandler}
-              value={formData.position}
+              value={formData.link}
             />
           </div>
           <div className="grid w-full items-center gap-2">
             <Label htmlFor="image">Image</Label>
-            {testimony.image ? (
+            {certification.image ? (
               <p className="text-xs line-clamp-1">
                 Current:{" "}
                 <a
-                  href={testimony.image}
+                  href={certification.image}
                   target="_blank"
                   rel="noreferrer"
                   className="italic underline text-blue-500"
                 >
-                  {extractFileNameFromUrl(testimony.image)}
+                  {extractFileNameFromUrl(certification.image)}
                 </a>
               </p>
             ) : null}
@@ -134,12 +128,12 @@ export default function TestimonyEditPage() {
             />
           </div>
           <div className="grid w-full items-center gap-2">
-            <Label htmlFor="content">Content</Label>
+            <Label htmlFor="description">Description</Label>
             <Textarea
-              id="content"
-              name="content"
+              id="description"
+              name="description"
               onChange={onChangeHandler}
-              value={formData.content}
+              value={formData.description}
             />
           </div>
           <div>
