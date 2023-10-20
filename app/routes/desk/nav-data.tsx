@@ -1,12 +1,11 @@
 import {
   Award,
-  Home,
   Image,
-  Info,
   Mailbox,
   Quote,
   Settings,
   Text,
+  Users,
 } from "lucide-react";
 import type { BottomNavItemProps } from "./bottom-nav-item";
 import type { NavItemProps } from "./nav-item";
@@ -14,11 +13,6 @@ import type { NavItemProps } from "./nav-item";
 type NavLinkType = NavItemProps & BottomNavItemProps;
 
 export const navLinks: NavLinkType[] = [
-  {
-    to: "dashboard",
-    label: "Dashboard",
-    icon: Home,
-  },
   {
     to: "sections",
     label: "Sections",
@@ -35,11 +29,6 @@ export const navLinks: NavLinkType[] = [
     icon: Image,
   },
   {
-    to: "contact-details",
-    label: "Contact Details",
-    icon: Info,
-  },
-  {
     to: "certifications",
     label: "Certifications",
     icon: Award,
@@ -48,6 +37,11 @@ export const navLinks: NavLinkType[] = [
     to: "mailbox",
     label: "Mailbox",
     icon: Mailbox,
+  },
+  {
+    to: "users",
+    label: "Users",
+    icon: Users,
   },
   {
     to: "settings",

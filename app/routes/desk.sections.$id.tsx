@@ -1,11 +1,6 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import {
-  NavLink,
-  Outlet,
-  useLoaderData,
-  useNavigate
-} from "@remix-run/react";
+import { NavLink, Outlet, useLoaderData, useNavigate } from "@remix-run/react";
 import { MoreVertical, X } from "lucide-react";
 import { ActionButton } from "~/components/action-button";
 import { SITE_TITLE } from "~/consts";
@@ -16,9 +11,9 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { id } = params;
 
   if (id) {
-    const { ok, section } = await getSection(id);
+    const { section } = await getSection(id);
 
-    if (ok) return json({ section });
+    if (section) return json({ section });
 
     return json({ section: null });
   }
@@ -53,7 +48,9 @@ export default function SectionPage() {
       <div className="flex h-full w-full flex-col overflow-hidden">
         <div className="space-y-1 border-b p-2">
           <div className="flex items-center justify-between">
-            <p className="font-outfit font-medium line-clamp-1">{section.title}</p>
+            <p className="font-outfit font-medium line-clamp-1">
+              {section.title}
+            </p>
             <div className="flex items-center">
               <ActionButton tooltip="Show menu" icon={MoreVertical} />
               <ActionButton tooltip="close" icon={X} action={back} />

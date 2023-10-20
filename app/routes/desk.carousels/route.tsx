@@ -13,9 +13,9 @@ import { CarouselListItem } from "./carousel-list-item";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await requireUserId(request);
 
-  const _carouselsQuery = await getAllCarousels();
+  const { carousels } = await getAllCarousels();
 
-  if (_carouselsQuery.ok) return json({ carousels: _carouselsQuery.carousels });
+  if (carousels) return json({ carousels });
 
   return json({ userId, carousels: [] });
 };
@@ -28,7 +28,7 @@ export default function CarouselsLayout() {
   return (
     <div className="flex h-full overflow-hidden">
       <div
-        className={cn("w-full flex-col border-r md:w-72", {
+        className={cn("w-full flex-col border-r flex md:w-72", {
           "md:flex hidden": hideParent,
         })}
       >

@@ -18,8 +18,8 @@ export default function SectionNewPage() {
   const back = () => navigate("/desk/sections");
 
   return (
-    <div className="h-full p-2">
-      <div className="flex items-center justify-between">
+    <div className="flex h-full w-full flex-col overflow-hidden">
+      <div className="flex items-center justify-between border-b p-2">
         <div>New Section</div>
         <ActionButton tooltip="close" icon={X} action={back} />
       </div>

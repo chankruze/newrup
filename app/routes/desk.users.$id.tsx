@@ -5,51 +5,49 @@ import { format } from "date-fns";
 import { MoreVertical, X } from "lucide-react";
 import { ActionButton } from "~/components/action-button";
 import { SITE_TITLE } from "~/consts";
-import { getCertification } from "~/dao/certifications.server";
+import { getUserById } from "~/dao/users.server";
 import { cn } from "~/lib/utils";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { id } = params;
 
   if (id) {
-    const { certification } = await getCertification(id);
+    const { user } = await getUserById(id);
 
-    if (certification) return json({ certification });
+    if (user) return json({ user });
 
-    return json({ certification: null });
+    return json({ user: null });
   }
 
-  return json({ certification: null });
+  return json({ user: null });
 };
 
-export type CertificationLoader = typeof loader;
+export type UserLoader = typeof loader;
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
-    { title: `${data?.certification?.name} / ${SITE_TITLE}` },
+    { title: `${data?.user?.name} / ${SITE_TITLE}` },
     {
       property: "og:title",
-      content: `${data?.certification?.name} / ${SITE_TITLE}`,
+      content: `${data?.user?.name} / ${SITE_TITLE}`,
     },
-    { name: "description", content: `${data?.certification?.description}` },
+    { name: "description", content: `${data?.user?.content}` },
   ];
 };
 
-export default function CertificationPage() {
-  const { certification } = useLoaderData<typeof loader>();
+export default function UserPage() {
+  const { user } = useLoaderData<typeof loader>();
 
   const navigate = useNavigate();
 
-  const back = () => navigate("/desk/certifications");
+  const back = () => navigate("/desk/users");
 
-  if (certification) {
+  if (user) {
     return (
       <div className="flex h-full w-full flex-col overflow-hidden">
         <div className="space-y-1 border-b p-2">
           <div className="flex items-center justify-between">
-            <p className="font-outfit font-medium line-clamp-1">
-              {certification.name}
-            </p>
+            <p className="font-outfit font-medium line-clamp-1">{user.name}</p>
             <div className="flex items-center">
               <ActionButton tooltip="Show menu" icon={MoreVertical} />
               <ActionButton tooltip="close" icon={X} action={back} />
@@ -85,7 +83,7 @@ export default function CertificationPage() {
               </NavLink>
             </div>
             <div className="text-sm font-medium">
-              {format(new Date(certification.updatedAt), "dd-MM-yyyy hh:mm a")}
+              {format(new Date(user.updatedAt), "dd-MM-yyyy hh:mm a")}
             </div>
           </div>
         </div>
@@ -98,7 +96,7 @@ export default function CertificationPage() {
 
   return (
     <div className="h-full w-full p-2 grid place-content-center">
-      <p>Certification not found!</p>
+      <p>User not found!</p>
     </div>
   );
 }

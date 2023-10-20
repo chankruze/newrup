@@ -11,9 +11,9 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { id } = params;
 
   if (id) {
-    const { ok, mail } = await getMail(id);
+    const { mail } = await getMail(id);
 
-    if (ok) return json({ mail });
+    if (mail) return json({ mail });
 
     return json({ mail: null });
   }

@@ -13,9 +13,9 @@ import { SectionListItem } from "./section-list-item";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await requireUserId(request);
 
-  const _sectionsQuery = await getAllSections();
+  const { sections } = await getAllSections();
 
-  if (_sectionsQuery.ok) return json({ sections: _sectionsQuery.sections });
+  if (sections) return json({ sections });
 
   return json({ userId, sections: [] });
 };
@@ -28,7 +28,7 @@ export default function SectionsLayout() {
   return (
     <div className="flex h-full overflow-hidden">
       <div
-        className={cn("w-full flex-col border-r md:w-72", {
+        className={cn("w-full flex-col border-r flex md:w-72", {
           "md:flex hidden": hideParent,
         })}
       >

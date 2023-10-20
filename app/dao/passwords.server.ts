@@ -13,15 +13,16 @@ export const getPassword = async (id: ObjectId) => {
   });
 };
 
-export const getPasswordUserId = async (userId: ObjectId) => {
+export const getPasswordByUserId = async (userId: ObjectId) => {
   const _db = await client.db(process.env.NEWRUP_DB);
 
   return await _db.collection(PASSWORDS_COLLECTION).findOne({
     userId,
+    expired: false,
   });
 };
 
-export const addPassword = async (userId: ObjectId, password: string) => {
+export const createPassword = async (userId: ObjectId, password: string) => {
   const _db = await client.db(process.env.NEWRUP_DB);
 
   // hash the password
@@ -29,7 +30,7 @@ export const addPassword = async (userId: ObjectId, password: string) => {
 
   try {
     // Insert the hashed password into the "passwords" collection
-    const result = await _db.collection("passwords").insertOne({
+    await _db.collection(PASSWORDS_COLLECTION).insertOne({
       hash,
       userId,
       expired: false,
@@ -37,9 +38,28 @@ export const addPassword = async (userId: ObjectId, password: string) => {
       updatedAt: new Date(),
     });
 
-    return { ok: true, id: result.insertedId };
+    return { ok: true };
   } catch (error) {
     log.e(error);
-    return { ok: false, id: null, error: "Unable to create a password" };
+    return { ok: false, error: "Unable to create a password" };
+  }
+};
+
+export const updatePassword = async (userId: ObjectId, password: string) => {
+  const _db = await client.db(process.env.NEWRUP_DB);
+
+  try {
+    // invalidate all old passwords
+    await _db
+      .collection(PASSWORDS_COLLECTION)
+      .updateMany({ userId }, { $set: { expired: true } });
+
+    // insert new pass
+    await createPassword(userId, password);
+
+    return { ok: true };
+  } catch (error) {
+    log.e(error);
+    return { ok: false, error: "Unable to create a password" };
   }
 };

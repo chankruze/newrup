@@ -19,13 +19,17 @@ export const getTestimony = async (id: string) => {
 export const getAllTestimonials = async () => {
   const _db = await client.db(process.env.NEWRUP_DB);
 
-  const _sections = await _db
-    .collection(TESTIMONIALS_COLLECTION)
-    .find({})
-    .sort({ name: 1, updatedAt: -1 })
-    .toArray();
+  try {
+    const _sections = await _db
+      .collection(TESTIMONIALS_COLLECTION)
+      .find({})
+      .sort({ name: 1, updatedAt: -1 })
+      .toArray();
 
-  return { ok: true, testimonials: _sections };
+    return { ok: true, testimonials: _sections };
+  } catch (error) {
+    return { ok: false, error };
+  }
 };
 
 export const createTestimony = async (testimonyInfo: FormData) => {

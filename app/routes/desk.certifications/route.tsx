@@ -13,10 +13,9 @@ import { CertificationListItem } from "./certification-list-item";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await requireUserId(request);
 
-  const _certificationsQuery = await getAllCertifications();
+  const { certifications } = await getAllCertifications();
 
-  if (_certificationsQuery.ok)
-    return json({ certifications: _certificationsQuery.certifications });
+  if (certifications) return json({ certifications });
 
   return json({ userId, certifications: [] });
 };
@@ -37,7 +36,7 @@ export default function CertificationsLayout() {
           <p className="font-outfit font-medium">Certifications</p>
           <div className="flex items-center">
             <Link to="new">
-              <ActionButton icon={Edit} tooltip="Add mail" />
+              <ActionButton icon={Edit} tooltip="Add certification" />
             </Link>
             <ActionButton icon={MoreVertical} tooltip="Show menu" />
           </div>
@@ -45,11 +44,11 @@ export default function CertificationsLayout() {
         <Separator />
         {certifications.length > 0 ? (
           <div className="flex-1 space-y-1 overflow-y-auto">
-            {certifications.map((mail) => (
+            {certifications.map((certification) => (
               <CertificationListItem
-                key={mail._id.toString()}
-                name={mail.name}
-                to={mail._id.toString()}
+                key={certification._id.toString()}
+                name={certification.name}
+                to={certification._id.toString()}
               />
             ))}
           </div>

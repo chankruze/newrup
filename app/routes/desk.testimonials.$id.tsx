@@ -12,9 +12,9 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { id } = params;
 
   if (id) {
-    const { ok, testimony } = await getTestimony(id);
+    const { testimony } = await getTestimony(id);
 
-    if (ok) return json({ testimony });
+    if (testimony) return json({ testimony });
 
     return json({ testimony: null });
   }

@@ -11,11 +11,9 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { id } = params;
 
   if (id) {
-    const { ok, carousel } = await getCarousel(id);
+    const { carousel } = await getCarousel(id);
 
-    console.log(carousel)
-
-    if (ok) return json({ carousel });
+    if (carousel) return json({ carousel });
 
     return json({ carousel: null });
   }
@@ -50,7 +48,9 @@ export default function CarouselPage() {
       <div className="flex h-full w-full flex-col overflow-hidden">
         <div className="space-y-1 border-b p-2">
           <div className="flex items-center justify-between">
-            <p className="font-outfit font-medium line-clamp-1">{carousel.name}</p>
+            <p className="font-outfit font-medium line-clamp-1">
+              {carousel.name}
+            </p>
             <div className="flex items-center">
               <ActionButton tooltip="Show menu" icon={MoreVertical} />
               <ActionButton tooltip="close" icon={X} action={back} />

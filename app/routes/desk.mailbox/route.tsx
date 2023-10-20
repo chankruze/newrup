@@ -1,7 +1,7 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Link, Outlet, useLoaderData, useLocation } from "@remix-run/react";
-import { Edit, MoreVertical } from "lucide-react";
+import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
+import { MoreVertical } from "lucide-react";
 import { ActionButton } from "~/components/action-button";
 import { ErrorBoundaryComponent } from "~/components/error-boundary";
 import { Separator } from "~/components/ui/separator";
@@ -13,31 +13,28 @@ import { MailListItem } from "./mail-list-item";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await requireUserId(request);
 
-  const _mailsQuery = await getAllMails();
+  const { mails } = await getAllMails();
 
-  if (_mailsQuery.ok) return json({ mails: _mailsQuery.mails });
+  if (mails) return json({ mails });
 
   return json({ userId, mails: [] });
 };
 
 export default function MailsLayout() {
   const location = useLocation();
-  const hideParent = location.pathname !== "/desk/mails";
+  const hideParent = location.pathname !== "/desk/mailbox";
   const { mails } = useLoaderData<typeof loader>();
 
   return (
     <div className="flex h-full overflow-hidden">
       <div
-        className={cn("w-full flex-col border-r md:w-72", {
+        className={cn("w-full flex-col border-r flex md:w-72", {
           "md:flex hidden": hideParent,
         })}
       >
         <div className="flex items-center justify-between p-2">
           <p className="font-outfit font-medium">Mails</p>
           <div className="flex items-center">
-            <Link to="new">
-              <ActionButton icon={Edit} tooltip="Add mail" />
-            </Link>
             <ActionButton icon={MoreVertical} tooltip="Show menu" />
           </div>
         </div>
