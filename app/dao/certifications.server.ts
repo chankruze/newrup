@@ -6,6 +6,13 @@ import { formToJSON } from "~/utils/form-helper.server";
 
 const CERTIFICATIONS_COLLECTION = "certifications";
 
+const certificationSchema = z.object({
+  name: z.string().min(1, "Name must not be empty."),
+  description: z.string().min(1, "Description must not be empty."),
+  image: z.any().nullable(),
+  link: z.string().min(1, "Link must not be empty."),
+});
+
 export const getCertification = async (id: string) => {
   const _db = await client.db(process.env.NEWRUP_DB);
 
@@ -37,16 +44,27 @@ export type CertificationInfo = {
   link: string;
 };
 
-export const createCertification = async (
-  certificationInfo: CertificationInfo
-) => {
+export const createCertification = async (formData: FormData) => {
+  // validate form data
+  const _validation = certificationSchema.safeParse(formToJSON(formData));
+  // send error data in response
+  if (!_validation.success) {
+    const errors = _validation.error.flatten();
+    // return validation errors
+    return {
+      ok: false,
+      error: errors,
+    };
+  }
+
   const _db = await client.db(process.env.NEWRUP_DB);
 
   try {
     const _certification = await _db
       .collection(CERTIFICATIONS_COLLECTION)
       .insertOne({
-        ...certificationInfo,
+        ..._validation.data,
+        thumbnail: _validation.data.image,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
@@ -61,13 +79,6 @@ export const updateCertification = async (
   certificationId: string,
   formData: FormData
 ) => {
-  const certificationSchema = z.object({
-    name: z.string().min(1, "Name must not be empty."),
-    description: z.string().min(1, "Description must not be empty."),
-    image: z.any().nullable(),
-    link: z.string().min(1, "Link must not be empty."),
-  });
-
   // validate form data
   const _validation = certificationSchema.safeParse(formToJSON(formData));
   // send error data in response

@@ -28,8 +28,8 @@ export default function CarouselsLayout() {
   return (
     <div className="flex h-full overflow-hidden">
       <div
-        className={cn("w-full flex-col border-r md:flex md:w-72", {
-          hidden: hideParent,
+        className={cn("w-full flex-col border-r md:w-72", {
+          "md:flex hidden": hideParent,
         })}
       >
         <div className="flex items-center justify-between p-2">
