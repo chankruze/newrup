@@ -5,6 +5,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
+import { Button } from "./ui/button";
 
 type ActionButtonProps = {
   icon: LucideIcon;
@@ -21,9 +22,9 @@ export const ActionButton = ({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <div className="p-2 hover:bg-accent" onClick={action}>
+          <Button variant="ghost" size="icon" onClick={action}>
             <Icon className="h-5 w-5" />
-          </div>
+          </Button>
         </TooltipTrigger>
         <TooltipContent>
           <p>{tooltip}</p>

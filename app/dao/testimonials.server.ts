@@ -7,24 +7,24 @@ import { formToJSON } from "~/utils/form-helper.server";
 const TESTIMONIALS_COLLECTION = "testimonials";
 
 export const getTestimony = async (id: string) => {
-  const _db = await client.db(process.env.MOBAZZAR_NS);
-  // find user by email
+  const _db = await client.db(process.env.NEWRUP_DB);
+
   const _testimony = await _db.collection(TESTIMONIALS_COLLECTION).findOne({
     _id: new ObjectId(id),
   });
-  // return user
+
   return { ok: true, testimony: _testimony };
 };
 
 export const getAllTestimonials = async () => {
-  const _db = await client.db(process.env.MOBAZZAR_NS);
-  // find user by email
+  const _db = await client.db(process.env.NEWRUP_DB);
+
   const _sections = await _db
     .collection(TESTIMONIALS_COLLECTION)
     .find({})
     .sort({ name: 1, updatedAt: -1 })
     .toArray();
-  // return user
+
   return { ok: true, testimonials: _sections };
 };
 
@@ -48,7 +48,7 @@ export const createTestimony = async (testimonyInfo: FormData) => {
     };
   }
 
-  const _db = await client.db(process.env.MOBAZZAR_NS);
+  const _db = await client.db(process.env.NEWRUP_DB);
 
   try {
     const _testimony = await _db.collection(TESTIMONIALS_COLLECTION).insertOne({
@@ -86,7 +86,7 @@ export const updateTestimony = async (
     };
   }
 
-  const _db = await client.db(process.env.MOBAZZAR_NS);
+  const _db = await client.db(process.env.NEWRUP_DB);
 
   // Create an empty update operation
   const updatedRecord: Record<string, string> = {};
@@ -123,7 +123,7 @@ export const updateTestimony = async (
 };
 
 export const deleteTestimony = async (testimonyId: string) => {
-  const _db = await client.db(process.env.MOBAZZAR_NS);
+  const _db = await client.db(process.env.NEWRUP_DB);
 
   try {
     const deleteQuery = await _db

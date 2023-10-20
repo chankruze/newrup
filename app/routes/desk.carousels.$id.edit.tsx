@@ -4,13 +4,13 @@ import { Form, useNavigation, useRouteLoaderData } from "@remix-run/react";
 import type { ChangeEvent } from "react";
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
+import { Checkbox } from "~/components/ui/checkbox";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { Textarea } from "~/components/ui/textarea";
-import { updateTestimony } from "~/dao/testimonials.server";
+import { updateCarousel } from "~/dao/carousels.server";
 import { uploadHandler } from "~/lib/upload.server";
 import { extractFileNameFromUrl } from "~/utils/extract-filename";
-import type { TestimonyLoader } from "./desk.testimonials.$id";
+import type { SectionLoader } from "./desk.sections.$id";
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
   const formData = await unstable_parseMultipartFormData(
@@ -25,10 +25,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
   switch (__action) {
     case "save": {
-      const { ok, error } = await updateTestimony(
-        params.id as string,
-        formData
-      );
+      const { ok, error } = await updateCarousel(params.id as string, formData);
 
       if (ok)
         return json({
@@ -51,9 +48,9 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   }
 };
 
-export default function TestimonyEditPage() {
-  const { testimony } = useRouteLoaderData<TestimonyLoader>(
-    "routes/desk.testimonials.$id"
+export default function CarouselEditPage() {
+  const { carousel } = useRouteLoaderData<SectionLoader>(
+    "routes/desk.carousels.$id"
   );
 
   const { state } = useNavigation();
@@ -61,9 +58,8 @@ export default function TestimonyEditPage() {
   const busy = state === "submitting";
 
   const [formData, setFormData] = useState({
-    name: testimony.name || "",
-    position: testimony.position || "",
-    content: testimony.content || "",
+    name: carousel.name || "",
+    description: carousel.description || "",
   });
 
   const onChangeHandler = (
@@ -94,47 +90,50 @@ export default function TestimonyEditPage() {
             />
           </div>
           <div className="grid w-full items-center gap-2">
-            <Label htmlFor="position">Position</Label>
+            <Label htmlFor="description">Position</Label>
             <Input
               type="text"
-              id="position"
-              name="position"
+              id="description"
+              name="description"
               onChange={onChangeHandler}
-              value={formData.position}
+              value={formData.description}
             />
           </div>
           <div className="grid w-full items-center gap-2">
-            <Label htmlFor="image">Image</Label>
-            {testimony.image ? (
-              <p className="text-xs line-clamp-1">
-                Current:{" "}
-                <a
-                  href={testimony.image}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="italic underline text-blue-500"
-                >
-                  {extractFileNameFromUrl(testimony.image)}
-                </a>
-              </p>
-            ) : null}
+            <Label htmlFor="images">Images</Label>
             <Input
               type="file"
-              id="image"
-              name="image"
+              id="images"
+              name="images"
               accept="image/png, image/jpeg"
-              placeholder="i.e. lorem ipsum"
               onChange={onChangeHandler}
             />
           </div>
+          <div className="flex items-center gap-2">
+            <Checkbox name="shuffle" id="shuffle" />
+            <Label htmlFor="shuffle">Shuffle images</Label>
+          </div>
           <div className="grid w-full items-center gap-2">
-            <Label htmlFor="content">Content</Label>
-            <Textarea
-              id="content"
-              name="content"
-              onChange={onChangeHandler}
-              value={formData.content}
-            />
+            {carousel.images.length > 0 ? (
+              <div className="grid grid-cols-4 place-content-center gap-2">
+                {carousel.images.map((image) => (
+                  <div
+                    key={image}
+                    className="max-h-24 overflow-hidden bg-red-400"
+                  >
+                    <a href={image} target="_blank" rel="noreferrer">
+                      <img
+                        src={image}
+                        alt={`Pic 1 of ${carousel.name}`}
+                        className="object-cover w-full h-full"
+                        loading="lazy"
+                      />
+                      {extractFileNameFromUrl(image)}
+                    </a>
+                  </div>
+                ))}
+              </div>
+            ) : null}
           </div>
           <div>
             <Button

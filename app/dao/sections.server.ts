@@ -7,23 +7,24 @@ import { formToJSON } from "~/utils/form-helper.server";
 const SECTIONS_COLLECTION = "sections";
 
 export const getSection = async (id: string) => {
-  const _db = await client.db(process.env.MOBAZZAR_NS);
-  // find user by email
+  const _db = await client.db(process.env.NEWRUP_DB);
+  // find section by id
   const _section = await _db.collection(SECTIONS_COLLECTION).findOne({
     _id: new ObjectId(id),
   });
-  // return user
+  // return section
   return { ok: true, section: _section };
 };
 
 export const getAllSections = async () => {
-  const _db = await client.db(process.env.MOBAZZAR_NS);
-  // find user by email
+  const _db = await client.db(process.env.NEWRUP_DB);
+  // find section by email
   const _sections = await _db
     .collection(SECTIONS_COLLECTION)
     .find({})
+    .sort({ title: 1 })
     .toArray();
-  // return user
+  // return section
   return { ok: true, sections: _sections };
 };
 
@@ -35,15 +36,15 @@ export type SectionInfo = {
 };
 
 export const createSection = async (sectionInfo: SectionInfo) => {
-  const _db = await client.db(process.env.MOBAZZAR_NS);
+  const _db = await client.db(process.env.NEWRUP_DB);
 
   try {
-    const _user = await _db.collection(SECTIONS_COLLECTION).insertOne({
+    const _section = await _db.collection(SECTIONS_COLLECTION).insertOne({
       ...sectionInfo,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-    return { ok: true, id: _user.insertedId };
+    return { ok: true, id: _section.insertedId };
   } catch (error) {
     log.e(error);
     return { ok: false, error: "Unable to add new section" };
@@ -73,7 +74,7 @@ export const updateSection = async (
     };
   }
 
-  const _db = await client.db(process.env.MOBAZZAR_NS);
+  const _db = await client.db(process.env.NEWRUP_DB);
 
   // Create an empty update operation
   const updatedRecord: Record<string, string> = {};
@@ -110,7 +111,7 @@ export const updateSection = async (
 };
 
 export const deleteSection = async (sectionId: string) => {
-  const _db = await client.db(process.env.MOBAZZAR_NS);
+  const _db = await client.db(process.env.NEWRUP_DB);
 
   try {
     const deleteQuery = await _db

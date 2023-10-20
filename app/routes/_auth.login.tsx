@@ -178,7 +178,7 @@ export default function LoginPage() {
                 <ErrorDiv>{_action.error.fieldErrors.password.at(0)}</ErrorDiv>
               ) : null}
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-2">
               <Checkbox name="remember" id="remember" />
               <Label htmlFor="remember">Remember me for 7 days</Label>
             </div>

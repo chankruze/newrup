@@ -19,7 +19,7 @@ export type User = WithId<Document> &
   };
 
 export const getUser = async (email: string) => {
-  const _db = await client.db(process.env.MOBAZZAR_NS);
+  const _db = await client.db(process.env.NEWRUP_DB);
   // find user by email
   const _user = await _db.collection(USERS_COLLECTION).findOne({
     email,
@@ -29,7 +29,7 @@ export const getUser = async (email: string) => {
 };
 
 export const addUser = async (userInfo: UserInfo) => {
-  const _db = await client.db(process.env.MOBAZZAR_NS);
+  const _db = await client.db(process.env.NEWRUP_DB);
 
   // create new user
   try {

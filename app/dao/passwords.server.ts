@@ -6,7 +6,7 @@ import { log } from "~/lib/logger.server";
 const PASSWORDS_COLLECTION = "passwords";
 
 export const getPassword = async (id: ObjectId) => {
-  const _db = await client.db(process.env.MOBAZZAR_NS);
+  const _db = await client.db(process.env.NEWRUP_DB);
 
   return await _db.collection(PASSWORDS_COLLECTION).findOne({
     _id: id,
@@ -14,7 +14,7 @@ export const getPassword = async (id: ObjectId) => {
 };
 
 export const getPasswordUserId = async (userId: ObjectId) => {
-  const _db = await client.db(process.env.MOBAZZAR_NS);
+  const _db = await client.db(process.env.NEWRUP_DB);
 
   return await _db.collection(PASSWORDS_COLLECTION).findOne({
     userId,
@@ -22,7 +22,7 @@ export const getPasswordUserId = async (userId: ObjectId) => {
 };
 
 export const addPassword = async (userId: ObjectId, password: string) => {
-  const _db = await client.db(process.env.MOBAZZAR_NS);
+  const _db = await client.db(process.env.NEWRUP_DB);
 
   // hash the password
   const hash = await bcrypt.hash(password, 12);

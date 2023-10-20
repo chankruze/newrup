@@ -2,15 +2,15 @@ import { NavLink } from "@remix-run/react";
 import { Loader } from "lucide-react";
 import { cn } from "~/lib/utils";
 
-type SectionListItemProps = {
+type TestimonyListItemProps = {
   to: string;
   title: string;
 };
 
-export const SectionListItem = ({ to, title }: SectionListItemProps) => {
+export const TestimonyListItem = ({ to, title }: TestimonyListItemProps) => {
   return (
     <NavLink
-      to={`${to}/edit`}
+      to={`${to}/preview`}
       className={({ isActive, isPending }) =>
         cn(
           "line-clamp-1 flex flex-1 items-center justify-between gap-3 px-4 py-3 font-outfit transition-all duration-300",

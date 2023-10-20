@@ -5,26 +5,25 @@ import { Edit, MoreVertical } from "lucide-react";
 import { ActionButton } from "~/components/action-button";
 import { ErrorBoundaryComponent } from "~/components/error-boundary";
 import { Separator } from "~/components/ui/separator";
-import { getAllTestimonials } from "~/dao/testimonials.server";
+import { getAllCarousels } from "~/dao/carousels.server";
 import { requireUserId } from "~/lib/session.server";
 import { cn } from "~/lib/utils";
-import { TestimonyListItem } from "./testimony-list-item";
+import { CarouselListItem } from "./carousel-list-item";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await requireUserId(request);
 
-  const _testimonialsQuery = await getAllTestimonials();
+  const _carouselsQuery = await getAllCarousels();
 
-  if (_testimonialsQuery.ok)
-    return json({ testimonials: _testimonialsQuery.testimonials });
+  if (_carouselsQuery.ok) return json({ carousels: _carouselsQuery.carousels });
 
-  return json({ userId, testimonials: [] });
+  return json({ userId, carousels: [] });
 };
 
-export default function TestimonysLayout() {
+export default function CarouselsLayout() {
   const location = useLocation();
-  const hideParent = location.pathname !== "/desk/testimonials";
-  const { testimonials } = useLoaderData<typeof loader>();
+  const hideParent = location.pathname !== "/desk/carousels";
+  const { carousels } = useLoaderData<typeof loader>();
 
   return (
     <div className="flex h-full overflow-hidden">
@@ -34,28 +33,28 @@ export default function TestimonysLayout() {
         })}
       >
         <div className="flex items-center justify-between p-2">
-          <p className="font-outfit font-medium">Testimonials</p>
+          <p className="font-outfit font-medium">Carousels</p>
           <div className="flex items-center">
             <Link to="new">
-              <ActionButton icon={Edit} tooltip="Add section" />
+              <ActionButton icon={Edit} tooltip="Add carousel" />
             </Link>
             <ActionButton icon={MoreVertical} tooltip="Show menu" />
           </div>
         </div>
         <Separator />
-        {testimonials.length > 0 ? (
+        {carousels.length > 0 ? (
           <div className="flex-1 space-y-1 overflow-y-auto">
-            {testimonials.map((testimony) => (
-              <TestimonyListItem
-                key={testimony._id.toString()}
-                title={testimony.name}
-                to={testimony._id.toString()}
+            {carousels.map((carousel) => (
+              <CarouselListItem
+                key={carousel._id.toString()}
+                name={carousel.name}
+                to={carousel._id.toString()}
               />
             ))}
           </div>
         ) : (
           <div className="h-full flex justify-center items-center p-2">
-            <p>No testimonials found</p>
+            <p>No carousels found</p>
           </div>
         )}
       </div>

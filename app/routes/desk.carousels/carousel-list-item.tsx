@@ -2,12 +2,12 @@ import { NavLink } from "@remix-run/react";
 import { Loader } from "lucide-react";
 import { cn } from "~/lib/utils";
 
-type SectionListItemProps = {
+type CarouselListItemProps = {
   to: string;
-  title: string;
+  name: string;
 };
 
-export const SectionListItem = ({ to, title }: SectionListItemProps) => {
+export const CarouselListItem = ({ to, name }: CarouselListItemProps) => {
   return (
     <NavLink
       to={to}
@@ -25,7 +25,7 @@ export const SectionListItem = ({ to, title }: SectionListItemProps) => {
       {({ isPending }) => (
         <>
           <div className="flex items-center gap-3">
-            <span className="line-clamp-1">{title}</span>
+            <span className="line-clamp-1">{name}</span>
           </div>
           {isPending ? (
             <div>

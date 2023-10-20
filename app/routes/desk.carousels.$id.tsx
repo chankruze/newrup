@@ -1,55 +1,56 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData, useNavigate } from "@remix-run/react";
-import { format } from "date-fns";
 import { MoreVertical, X } from "lucide-react";
 import { ActionButton } from "~/components/action-button";
 import { SITE_TITLE } from "~/consts";
-import { getTestimony } from "~/dao/testimonials.server";
+import { getCarousel } from "~/dao/carousels.server";
 import { cn } from "~/lib/utils";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { id } = params;
 
   if (id) {
-    const { ok, testimony } = await getTestimony(id);
+    const { ok, carousel } = await getCarousel(id);
 
-    if (ok) return json({ testimony });
+    console.log(carousel)
 
-    return json({ testimony: null });
+    if (ok) return json({ carousel });
+
+    return json({ carousel: null });
   }
 
-  return json({ testimony: null });
+  return json({ carousel: null });
 };
 
-export type TestimonyLoader = typeof loader;
+export type SectionLoader = typeof loader;
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
-    { title: `${data?.testimony?.name} / ${SITE_TITLE}` },
+    { title: `${data?.carousel?.name} / ${SITE_TITLE}` },
     {
       property: "og:title",
-      content: `${data?.testimony?.name} / ${SITE_TITLE}`,
+      content: `${data?.carousel?.name} / ${SITE_TITLE}`,
     },
-    { name: "description", content: `${data?.testimony?.content}` },
+    { name: "description", content: `${data?.carousel?.content}` },
   ];
 };
 
-export default function TestimonyPage() {
-  const { testimony } = useLoaderData<typeof loader>();
+export default function CarouselPage() {
+  const { carousel } = useLoaderData<typeof loader>();
 
   const navigate = useNavigate();
 
-  const back = () => navigate("/desk/testimonials");
+  const back = () => navigate("/desk/carousels");
 
-  if (testimony) {
+  if (carousel) {
+    const lastUpdated = new Date(carousel.updatedAt);
+
     return (
       <div className="flex h-full w-full flex-col overflow-hidden">
         <div className="space-y-1 border-b p-2">
           <div className="flex items-center justify-between">
-            <p className="font-outfit font-medium line-clamp-1">
-              {testimony.name}'s Testimony
-            </p>
+            <p className="font-outfit font-medium line-clamp-1">{carousel.name}</p>
             <div className="flex items-center">
               <ActionButton tooltip="Show menu" icon={MoreVertical} />
               <ActionButton tooltip="close" icon={X} action={back} />
@@ -84,8 +85,9 @@ export default function TestimonyPage() {
                 Preview
               </NavLink>
             </div>
-            <div className="text-sm font-medium">
-              {format(new Date(testimony.updatedAt), "dd-MM-yyyy hh:mm a")}
+            <div className="text-sm">
+              {lastUpdated.toLocaleDateString()}{" "}
+              {lastUpdated.toLocaleTimeString()}
             </div>
           </div>
         </div>
@@ -98,7 +100,7 @@ export default function TestimonyPage() {
 
   return (
     <div className="h-full w-full p-2 grid place-content-center">
-      <p>Testimony not found!</p>
+      <p>Carousel not found!</p>
     </div>
   );
 }

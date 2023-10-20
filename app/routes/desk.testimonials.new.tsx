@@ -45,7 +45,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 };
 
-export default function SectionNewPage() {
+export default function NewTestimonyPage() {
   const navigate = useNavigate();
   const { state } = useNavigation();
 
