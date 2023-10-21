@@ -13,24 +13,21 @@ cloudinary.config({
 });
 
 export const uploadImageToCloudinary = async (
-  data: AsyncIterable<Uint8Array>
+  data: AsyncIterable<Uint8Array>,
 ) => {
   const uploadPromise = new Promise<UploadApiResponse | undefined>(
     async (resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          folder: process.env.CLOUDINARY_IMG_FOLDER,
-        },
+        { folder: process.env.CLOUDINARY_IMG_FOLDER },
         (error, result) => {
           if (error) {
-            reject(error);
-            return;
+            return reject(error);
           }
           resolve(result);
-        }
+        },
       );
       await writeAsyncIterableToWritable(data, uploadStream);
-    }
+    },
   );
 
   return uploadPromise;
@@ -50,5 +47,5 @@ export const uploadHandler = unstable_composeUploadHandlers(
     }
   },
   // fallback to memory for everything else
-  unstable_createMemoryUploadHandler()
+  unstable_createMemoryUploadHandler(),
 );

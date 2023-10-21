@@ -2,9 +2,14 @@ import { ObjectId } from "mongodb";
 import { z } from "zod";
 import { client } from "~/lib/db.server";
 import { log } from "~/lib/logger.server";
-import { formToJSON } from "~/utils/form-helper.server";
 
 const CAROUSELS_COLLECTION = "carousels";
+
+const carouselSchema = z.object({
+  name: z.string().min(1, "Name must not be empty."),
+  description: z.string().min(1, "Description must not be empty."),
+  images: z.array(z.string()),
+});
 
 export const getCarousel = async (id: string) => {
   const _db = await client.db(process.env.NEWRUP_DB);
@@ -31,15 +36,32 @@ export const getAllCarousels = async () => {
 export type CarouselInfo = {
   name: string;
   description: string;
-  images: string;
+  images: string[];
+  shuffle: boolean;
 };
 
-export const createCarousel = async (carouselInfo: CarouselInfo) => {
+export const createCarousel = async (data: CarouselInfo) => {
   const _db = await client.db(process.env.NEWRUP_DB);
+
+  // validate form data
+  const _validation = carouselSchema.safeParse(data);
+  // send error data in response
+  if (!_validation.success) {
+    const errors = _validation.error.flatten();
+    // return validation errors
+    return {
+      ok: false,
+      error: errors,
+    };
+  }
+
+  console.log({
+    validation: _validation.data,
+  });
 
   try {
     const _carousel = await _db.collection(CAROUSELS_COLLECTION).insertOne({
-      ...carouselInfo,
+      ..._validation.data,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -52,16 +74,10 @@ export const createCarousel = async (carouselInfo: CarouselInfo) => {
 
 export const updateCarousel = async (
   carouselId: string,
-  carouselInfo: FormData
+  data: CarouselInfo
 ) => {
-  const carouselSchema = z.object({
-    name: z.string().min(1, "Name must not be empty."),
-    description: z.string().min(1, "Description must not be empty."),
-    images: z.array(z.any().nullable()),
-  });
-
   // validate form data
-  const _validation = carouselSchema.safeParse(formToJSON(carouselInfo));
+  const _validation = carouselSchema.safeParse(data);
   // send error data in response
   if (!_validation.success) {
     const errors = _validation.error.flatten();
@@ -74,8 +90,13 @@ export const updateCarousel = async (
 
   const _db = await client.db(process.env.NEWRUP_DB);
 
+  // get old record by carouselId
+  const { carousel } = await getCarousel(carouselId);
+
+  if (!carousel) return { ok: false, error: "No carousel found with that id." };
+
   // Create an empty update operation
-  const updatedRecord: Record<string, string> = {};
+  const updatedRecord: Record<string, string | string[]> = {};
 
   if (_validation.data.name !== undefined) {
     updatedRecord.name = _validation.data.name;
@@ -85,17 +106,20 @@ export const updateCarousel = async (
     updatedRecord.description = _validation.data.description;
   }
 
-  if (typeof _validation.data.images === "string") {
-    updatedRecord.images = _validation.data.images;
+  if (_validation.data.images.length) {
+    updatedRecord.images = [...carousel.images, ..._validation.data.images];
   }
 
   try {
     const updateQuery = await _db
       .collection(CAROUSELS_COLLECTION)
-      .updateOne({ _id: new ObjectId(carouselId) }, { $set: updatedRecord });
+      .updateOne(
+        { _id: new ObjectId(carouselId) },
+        { $set: { ...updatedRecord, updatedAt: new Date() } }
+      );
 
     if (updateQuery.matchedCount === 0) {
-      return { error: "No carousel found with that id." };
+      return { ok: false, error: "No carousel found with that id." };
     }
     return { ok: true };
   } catch (error) {

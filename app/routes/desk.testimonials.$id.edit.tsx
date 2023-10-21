@@ -1,5 +1,9 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
-import { json, unstable_parseMultipartFormData } from "@remix-run/node";
+import {
+  json,
+  redirect,
+  unstable_parseMultipartFormData,
+} from "@remix-run/node";
 import { Form, useNavigation, useRouteLoaderData } from "@remix-run/react";
 import type { ChangeEvent } from "react";
 import { useEffect, useState } from "react";
@@ -15,7 +19,7 @@ import type { TestimonyLoader } from "./desk.testimonials.$id";
 export const action = async ({ request, params }: ActionFunctionArgs) => {
   const formData = await unstable_parseMultipartFormData(
     request,
-    uploadHandler
+    uploadHandler,
   );
 
   // get the form action and check if it's:
@@ -27,13 +31,10 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     case "save": {
       const { ok, error } = await updateTestimony(
         params.id as string,
-        formData
+        formData,
       );
 
-      if (ok)
-        return json({
-          ok: true,
-        });
+      if (ok) return redirect(`/desk/testimonials/${params.id}/preview`);
 
       return json({ ok: false, error });
     }
@@ -53,7 +54,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 export default function TestimonyEditPage() {
   const { testimony } = useRouteLoaderData<TestimonyLoader>(
-    "routes/desk.testimonials.$id"
+    "routes/desk.testimonials.$id",
   );
 
   const { state } = useNavigation();
@@ -67,7 +68,7 @@ export default function TestimonyEditPage() {
   });
 
   const onChangeHandler = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
     setFormData((data) => ({
       ...data,
@@ -112,13 +113,13 @@ export default function TestimonyEditPage() {
           <div className="grid w-full items-center gap-2">
             <Label htmlFor="image">Image</Label>
             {testimony.image ? (
-              <p className="text-xs line-clamp-1">
+              <p className="line-clamp-1 text-xs">
                 Current:{" "}
                 <a
                   href={testimony.image}
                   target="_blank"
                   rel="noreferrer"
-                  className="italic underline text-blue-500"
+                  className="italic text-blue-500 underline"
                 >
                   {extractFileNameFromUrl(testimony.image)}
                 </a>

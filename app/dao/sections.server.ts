@@ -98,7 +98,10 @@ export const updateSection = async (
   try {
     const updateQuery = await _db
       .collection(SECTIONS_COLLECTION)
-      .updateOne({ _id: new ObjectId(sectionId) }, { $set: updatedRecord });
+      .updateOne(
+        { _id: new ObjectId(sectionId) },
+        { $set: { ...updatedRecord, updatedAt: new Date() } }
+      );
 
     if (updateQuery.matchedCount === 0) {
       return { error: "No section found with that id." };

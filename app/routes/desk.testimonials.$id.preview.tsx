@@ -10,26 +10,30 @@ import type { TestimonyLoader } from "./desk.testimonials.$id";
 
 export default function TestimonyPreviewPage() {
   const { testimony } = useRouteLoaderData<TestimonyLoader>(
-    "routes/desk.testimonials.$id"
+    "routes/desk.testimonials.$id",
   );
 
   return (
-    <div className="h-full w-full grid place-items-center overflow-y-auto p-4">
-      <Card className="w-[350px] text-center">
+    <div className="grid h-full w-full place-items-center overflow-y-auto p-4">
+      <Card className="w-full max-w-md rounded-lg border text-center shadow-lg">
         <CardHeader>
-          <CardTitle className="font-outfit">{testimony.name}</CardTitle>
-          <CardDescription>{testimony.position}</CardDescription>
+          <CardTitle className="font-outfit text-lg">
+            {testimony.name}
+          </CardTitle>
+          <CardDescription className="font-roboto">
+            {testimony.position}
+          </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-          <div className="h-24 w-24 mx-auto rounded-full overflow-hidden">
+          <div className="mx-auto h-24 w-24 overflow-hidden rounded-full">
             <img
               src={testimony.image}
               alt={testimony.name}
               loading="lazy"
-              className="w-full h-full object-cover"
+              className="h-full w-full object-cover"
             />
           </div>
-          <p className="font-medium italic font-roboto">{testimony.content}</p>
+          <p className="font-outfit font-medium">{testimony.content}</p>
         </CardContent>
       </Card>
     </div>

@@ -117,7 +117,7 @@ export const updateCertification = async (
       .collection(CERTIFICATIONS_COLLECTION)
       .updateOne(
         { _id: new ObjectId(certificationId) },
-        { $set: updatedRecord }
+        { $set: { ...updatedRecord, updatedAt: new Date() } }
       );
 
     if (updateQuery.matchedCount === 0) {

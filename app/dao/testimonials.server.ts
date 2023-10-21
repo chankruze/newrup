@@ -114,7 +114,10 @@ export const updateTestimony = async (
   try {
     const updateQuery = await _db
       .collection(TESTIMONIALS_COLLECTION)
-      .updateOne({ _id: new ObjectId(testimonyId) }, { $set: updatedRecord });
+      .updateOne(
+        { _id: new ObjectId(testimonyId) },
+        { $set: { ...updatedRecord, updatedAt: new Date() } }
+      );
 
     if (updateQuery.matchedCount === 0) {
       return { error: "No testimony found with that id." };
