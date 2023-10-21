@@ -1,5 +1,6 @@
 import {
   Award,
+  Building2,
   Image,
   Mailbox,
   Quote,
@@ -18,6 +19,11 @@ export const navLinks: NavLinkType[] = [
     to: "sections",
     label: "Sections",
     icon: Text,
+  },
+  {
+    to: "partners",
+    label: "Partners",
+    icon: Building2,
   },
   {
     to: "products",
