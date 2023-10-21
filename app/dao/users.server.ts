@@ -213,7 +213,7 @@ export const updateUser = async (userId: string, formData: FormData) => {
       .collection(USERS_COLLECTION)
       .updateOne(
         { _id: new ObjectId(userId) },
-        { $set: { ...updatedRecord, updatedAt: new Date() } }
+        { $set: { ...updatedRecord, updatedAt: new Date() } },
       );
 
     if (updateQuery.matchedCount === 0) {
@@ -230,5 +230,32 @@ export const updateUser = async (userId: string, formData: FormData) => {
   } catch (error) {
     log.e(error);
     return { ok: false, error: "Unable to update that user." };
+  }
+};
+
+export const deleteUser = async (userId: string) => {
+  const _db = await client.db(process.env.NEWRUP_DB);
+
+  try {
+    const deleteQuery = await _db
+      .collection(USERS_COLLECTION)
+      .deleteOne({ _id: new ObjectId(userId) });
+
+    if (deleteQuery.deletedCount === 0) {
+      return {
+        ok: false,
+        error: `Unable to delete user`,
+      };
+    }
+    return {
+      ok: true,
+      message: `User [id: ${userId.toString()}] deleted.`,
+    };
+  } catch (error) {
+    log.e(error);
+    return {
+      ok: false,
+      error: `Unable to delete that user.`,
+    };
   }
 };

@@ -27,7 +27,7 @@ export default function ProductPreviewPage() {
           rel="noreferrer"
           className="mt-4 block cursor-pointer rounded-lg bg-primary py-3 text-center font-semibold text-primary-foreground transition-colors duration-300 ease-in-out hover:bg-primary/80"
         >
-          View Document
+          Watch Video
         </a>
       </div>
     </div>

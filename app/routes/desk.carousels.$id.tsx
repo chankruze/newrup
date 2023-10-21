@@ -1,11 +1,47 @@
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { Outlet, useLoaderData, useNavigate } from "@remix-run/react";
-import { MoreVertical, X } from "lucide-react";
+import type {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
+import {
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useSubmit,
+} from "@remix-run/react";
+import { format } from "date-fns";
+import { MoreVertical, Trash, X } from "lucide-react";
 import { ActionButton } from "~/components/action-button";
 import { ActionTabButton } from "~/components/action-tab-button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import { SITE_TITLE } from "~/consts";
-import { getCarousel } from "~/dao/carousels.server";
+import { deleteCarousel, getCarousel } from "~/dao/carousels.server";
+
+export const action = async ({ request, params }: ActionFunctionArgs) => {
+  const formData = await request.formData();
+
+  const __action = formData.get("__action");
+
+  switch (__action) {
+    case "delete": {
+      const { ok, error } = await deleteCarousel(params.id as string);
+
+      if (ok) return redirect(`/desk/carousels`);
+
+      return json({ ok: false, error });
+    }
+
+    default: {
+      throw new Error("Unknown action");
+    }
+  }
+};
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { id } = params;
@@ -36,14 +72,14 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 
 export default function CarouselPage() {
   const { carousel } = useLoaderData<typeof loader>();
-
+  const submit = useSubmit();
   const navigate = useNavigate();
 
   const back = () => navigate("/desk/carousels");
 
-  if (carousel) {
-    const lastUpdated = new Date(carousel.updatedAt);
+  const _delete = () => submit({ __action: "delete" }, { method: "post" });
 
+  if (carousel) {
     return (
       <div className="flex h-full w-full flex-col overflow-hidden">
         <div className="space-y-1 border-b p-2">
@@ -52,7 +88,17 @@ export default function CarouselPage() {
               {carousel.name}
             </p>
             <div className="flex items-center">
-              <ActionButton tooltip="Show menu" icon={MoreVertical} />
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <ActionButton tooltip="close" icon={MoreVertical} />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={_delete}>
+                    <Trash className="mr-2 h-4 w-4" />
+                    <span>Delete</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <ActionButton tooltip="close" icon={X} action={back} />
             </div>
           </div>
@@ -61,9 +107,9 @@ export default function CarouselPage() {
               <ActionTabButton to="edit" label="Editor" />
               <ActionTabButton to="preview" label="Preview" />
             </div>
-            <div className="text-sm">
-              {lastUpdated.toLocaleDateString()}{" "}
-              {lastUpdated.toLocaleTimeString()}
+            <div className="text-sm font-medium">
+              Updated:{" "}
+              {format(new Date(carousel.updatedAt), "dd-MM-yyyy hh:mm a")}
             </div>
           </div>
         </div>

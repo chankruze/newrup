@@ -1,11 +1,47 @@
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { Outlet, useLoaderData, useNavigate } from "@remix-run/react";
-import { MoreVertical, X } from "lucide-react";
+import type {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
+import {
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useSubmit,
+} from "@remix-run/react";
+import { format } from "date-fns";
+import { MoreVertical, Trash, X } from "lucide-react";
 import { ActionButton } from "~/components/action-button";
 import { ActionTabButton } from "~/components/action-tab-button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import { SITE_TITLE } from "~/consts";
-import { getSection } from "~/dao/sections.server";
+import { deleteSection, getSection } from "~/dao/sections.server";
+
+export const action = async ({ request, params }: ActionFunctionArgs) => {
+  const formData = await request.formData();
+
+  const __action = formData.get("__action");
+
+  switch (__action) {
+    case "delete": {
+      const { ok, error } = await deleteSection(params.id as string);
+
+      if (ok) return redirect(`/desk/sections`);
+
+      return json({ ok: false, error });
+    }
+
+    default: {
+      throw new Error("Unknown action");
+    }
+  }
+};
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { id } = params;
@@ -36,14 +72,14 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 
 export default function SectionPage() {
   const { section } = useLoaderData<typeof loader>();
-
+  const submit = useSubmit();
   const navigate = useNavigate();
 
   const back = () => navigate("/desk/sections");
 
-  if (section) {
-    const lastUpdated = new Date(section.updatedAt);
+  const _delete = () => submit({ __action: "delete" }, { method: "post" });
 
+  if (section) {
     return (
       <div className="flex h-full w-full flex-col overflow-hidden">
         <div className="space-y-1 border-b p-2">
@@ -52,7 +88,17 @@ export default function SectionPage() {
               {section.title}
             </p>
             <div className="flex items-center">
-              <ActionButton tooltip="Show menu" icon={MoreVertical} />
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <ActionButton tooltip="close" icon={MoreVertical} />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={_delete}>
+                    <Trash className="mr-2 h-4 w-4" />
+                    <span>Delete</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <ActionButton tooltip="close" icon={X} action={back} />
             </div>
           </div>
@@ -61,41 +107,15 @@ export default function SectionPage() {
               <ActionTabButton to="edit" label="Editor" />
               <ActionTabButton to="preview" label="Preview" />
             </div>
-            <div className="text-sm">
-              {lastUpdated.toLocaleDateString()}{" "}
-              {lastUpdated.toLocaleTimeString()}
+            <div className="text-sm font-medium">
+              Updated:{" "}
+              {format(new Date(section.updatedAt), "dd-MM-yyyy hh:mm a")}
             </div>
           </div>
         </div>
         <div className="flex-1 overflow-y-auto">
           <Outlet />
         </div>
-        {/* <div className="flex items-center justify-between border-t p-2">
-          <div></div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="destructive"
-              type="submit"
-              className="flex items-center justify-center gap-1"
-              name="__action"
-              value="delete"
-            >
-              <Trash className="w-4 h-4" />
-              <span>Delete</span>
-            </Button>
-            <Form method="post" action="">
-              <Button
-                type="submit"
-                className="flex items-center justify-center gap-1"
-                name="__action"
-                value="save"
-              >
-                <Save className="h-4 w-4" />
-                <span>Save</span>
-              </Button>
-            </Form>
-          </div>
-        </div> */}
       </div>
     );
   }

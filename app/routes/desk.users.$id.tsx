@@ -1,12 +1,47 @@
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { Outlet, useLoaderData, useNavigate } from "@remix-run/react";
+import type {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
+import {
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useSubmit,
+} from "@remix-run/react";
 import { format } from "date-fns";
-import { MoreVertical, X } from "lucide-react";
+import { MoreVertical, Trash, X } from "lucide-react";
 import { ActionButton } from "~/components/action-button";
 import { ActionTabButton } from "~/components/action-tab-button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import { SITE_TITLE } from "~/consts";
-import { getUserById } from "~/dao/users.server";
+import { deleteUser, getUserById } from "~/dao/users.server";
+
+export const action = async ({ request, params }: ActionFunctionArgs) => {
+  const formData = await request.formData();
+
+  const __action = formData.get("__action");
+
+  switch (__action) {
+    case "delete": {
+      const { ok, error } = await deleteUser(params.id as string);
+
+      if (ok) return redirect(`/desk/users`);
+
+      return json({ ok: false, error });
+    }
+
+    default: {
+      throw new Error("Unknown action");
+    }
+  }
+};
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { id } = params;
@@ -37,10 +72,12 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 
 export default function UserPage() {
   const { user } = useLoaderData<typeof loader>();
-
+  const submit = useSubmit();
   const navigate = useNavigate();
 
   const back = () => navigate("/desk/users");
+
+  const _delete = () => submit({ __action: "delete" }, { method: "post" });
 
   if (user) {
     return (
@@ -49,7 +86,17 @@ export default function UserPage() {
           <div className="flex items-center justify-between">
             <p className="line-clamp-1 font-outfit font-medium">{user.name}</p>
             <div className="flex items-center">
-              <ActionButton tooltip="Show menu" icon={MoreVertical} />
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <ActionButton tooltip="close" icon={MoreVertical} />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={_delete}>
+                    <Trash className="mr-2 h-4 w-4" />
+                    <span>Delete</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <ActionButton tooltip="close" icon={X} action={back} />
             </div>
           </div>
@@ -59,7 +106,7 @@ export default function UserPage() {
               <ActionTabButton to="preview" label="Preview" />
             </div>
             <div className="text-sm font-medium">
-              {format(new Date(user.updatedAt), "dd-MM-yyyy hh:mm a")}
+              Updated: {format(new Date(user.updatedAt), "dd-MM-yyyy hh:mm a")}
             </div>
           </div>
         </div>

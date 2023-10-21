@@ -1,11 +1,41 @@
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { useLoaderData, useNavigate } from "@remix-run/react";
+import type {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
+import { useLoaderData, useNavigate, useSubmit } from "@remix-run/react";
 import { format } from "date-fns";
-import { MoreVertical, X } from "lucide-react";
+import { MoreVertical, Trash, X } from "lucide-react";
 import { ActionButton } from "~/components/action-button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import { SITE_TITLE } from "~/consts";
-import { getMail } from "~/dao/mails.server";
+import { deleteMail, getMail } from "~/dao/mails.server";
+
+export const action = async ({ request, params }: ActionFunctionArgs) => {
+  const formData = await request.formData();
+
+  const __action = formData.get("__action");
+
+  switch (__action) {
+    case "delete": {
+      const { ok, error } = await deleteMail(params.id as string);
+
+      if (ok) return redirect(`/desk/mailbox`);
+
+      return json({ ok: false, error });
+    }
+
+    default: {
+      throw new Error("Unknown action");
+    }
+  }
+};
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { id } = params;
@@ -34,10 +64,12 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 
 export default function MailPage() {
   const { mail } = useLoaderData<typeof loader>();
-
+  const submit = useSubmit();
   const navigate = useNavigate();
 
   const back = () => navigate("/desk/mailbox");
+
+  const _delete = () => submit({ __action: "delete" }, { method: "post" });
 
   if (mail) {
     return (
@@ -48,7 +80,17 @@ export default function MailPage() {
               {mail.subject}
             </p>
             <div className="flex items-center">
-              <ActionButton tooltip="Show menu" icon={MoreVertical} />
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <ActionButton tooltip="close" icon={MoreVertical} />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={_delete}>
+                    <Trash className="mr-2 h-4 w-4" />
+                    <span>Delete</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <ActionButton tooltip="close" icon={X} action={back} />
             </div>
           </div>
