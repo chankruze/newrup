@@ -1,12 +1,12 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { NavLink, Outlet, useLoaderData, useNavigate } from "@remix-run/react";
+import { Outlet, useLoaderData, useNavigate } from "@remix-run/react";
 import { format } from "date-fns";
 import { MoreVertical, X } from "lucide-react";
 import { ActionButton } from "~/components/action-button";
+import { ActionTabButton } from "~/components/action-tab-button";
 import { SITE_TITLE } from "~/consts";
 import { getTestimony } from "~/dao/testimonials.server";
-import { cn } from "~/lib/utils";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { id } = params;
@@ -47,7 +47,7 @@ export default function TestimonyPage() {
       <div className="flex h-full w-full flex-col overflow-hidden">
         <div className="space-y-1 border-b p-2">
           <div className="flex items-center justify-between">
-            <p className="font-outfit font-medium line-clamp-1">
+            <p className="line-clamp-1 font-outfit font-medium">
               {testimony.name}'s Testimony
             </p>
             <div className="flex items-center">
@@ -57,32 +57,8 @@ export default function TestimonyPage() {
           </div>
           <div className="flex items-center justify-between gap-1">
             <div className="flex items-center gap-1">
-              <NavLink
-                to="edit"
-                className={({ isActive, isPending }) =>
-                  cn("rounded px-2 py-1 text-sm", {
-                    "bg-primary text-primary-foreground": isActive,
-                    "hover:bg-accent": !isActive,
-                    "bg-red-400/10 text-red-400": isPending,
-                  })
-                }
-                end
-              >
-                Editor
-              </NavLink>
-              <NavLink
-                to="preview"
-                className={({ isActive, isPending }) =>
-                  cn("rounded px-2 py-1 text-sm", {
-                    "bg-primary text-primary-foreground": isActive,
-                    "hover:bg-accent": !isActive,
-                    "bg-red-400/10 text-red-400": isPending,
-                  })
-                }
-                end
-              >
-                Preview
-              </NavLink>
+              <ActionTabButton to="edit" label="Editor" />
+              <ActionTabButton to="preview" label="Preview" />
             </div>
             <div className="text-sm font-medium">
               {format(new Date(testimony.updatedAt), "dd-MM-yyyy hh:mm a")}
@@ -97,7 +73,7 @@ export default function TestimonyPage() {
   }
 
   return (
-    <div className="h-full w-full p-2 grid place-content-center">
+    <div className="grid h-full w-full place-content-center p-2">
       <p>Testimony not found!</p>
     </div>
   );

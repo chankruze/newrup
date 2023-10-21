@@ -1,12 +1,12 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { NavLink, Outlet, useLoaderData, useNavigate } from "@remix-run/react";
+import { Outlet, useLoaderData, useNavigate } from "@remix-run/react";
 import { format } from "date-fns";
 import { MoreVertical, X } from "lucide-react";
 import { ActionButton } from "~/components/action-button";
+import { ActionTabButton } from "~/components/action-tab-button";
 import { SITE_TITLE } from "~/consts";
 import { getProduct } from "~/dao/products.server";
-import { cn } from "~/lib/utils";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { id } = params;
@@ -57,32 +57,8 @@ export default function ProductPage() {
           </div>
           <div className="flex items-center justify-between gap-1">
             <div className="flex items-center gap-1">
-              <NavLink
-                to="edit"
-                className={({ isActive, isPending }) =>
-                  cn("px-2 py-1 text-sm", {
-                    "bg-primary text-primary-foreground": isActive,
-                    "hover:bg-accent": !isActive,
-                    "bg-red-400/10 text-red-400": isPending,
-                  })
-                }
-                end
-              >
-                Editor
-              </NavLink>
-              <NavLink
-                to="preview"
-                className={({ isActive, isPending }) =>
-                  cn("px-2 py-1 text-sm", {
-                    "bg-primary text-primary-foreground": isActive,
-                    "hover:bg-accent": !isActive,
-                    "bg-red-400/10 text-red-400": isPending,
-                  })
-                }
-                end
-              >
-                Preview
-              </NavLink>
+              <ActionTabButton to="edit" label="Editor" />
+              <ActionTabButton to="preview" label="Preview" />
             </div>
             <div className="text-sm font-medium">
               {format(new Date(product.updatedAt), "dd-MM-yyyy hh:mm a")}
