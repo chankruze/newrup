@@ -6,6 +6,13 @@ import { formToJSON } from "~/utils/form-helper.server";
 
 const SECTIONS_COLLECTION = "sections";
 
+const sectionSchema = z.object({
+  title: z.string().min(1, "Title must not be empty."),
+  subtitle: z.string().optional(),
+  image: z.any().nullable(),
+  description: z.string().min(1, "Description must not be empty."),
+});
+
 export const getSection = async (id: string) => {
   const _db = await client.db(process.env.NEWRUP_DB);
   // find section by id
@@ -32,15 +39,27 @@ export type SectionInfo = {
   title: string;
   subtitle: string;
   description: string;
-  image: string;
+  image: string | null;
 };
 
 export const createSection = async (sectionInfo: SectionInfo) => {
   const _db = await client.db(process.env.NEWRUP_DB);
 
+  // validate form data
+  const _validation = sectionSchema.safeParse(sectionInfo);
+  // send error data in response
+  if (!_validation.success) {
+    const errors = _validation.error.flatten();
+    // return validation errors
+    return {
+      ok: false,
+      error: errors,
+    };
+  }
+
   try {
     const _section = await _db.collection(SECTIONS_COLLECTION).insertOne({
-      ...sectionInfo,
+      ..._validation.data,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -53,15 +72,8 @@ export const createSection = async (sectionInfo: SectionInfo) => {
 
 export const updateSection = async (
   sectionId: string,
-  sectionInfo: FormData
+  sectionInfo: FormData,
 ) => {
-  const sectionSchema = z.object({
-    title: z.string().min(1, "Title must not be empty."),
-    subtitle: z.string(),
-    image: z.any().nullable(),
-    description: z.string().min(1, "Description must not be empty."),
-  });
-
   // validate form data
   const _validation = sectionSchema.safeParse(formToJSON(sectionInfo));
   // send error data in response
@@ -100,7 +112,7 @@ export const updateSection = async (
       .collection(SECTIONS_COLLECTION)
       .updateOne(
         { _id: new ObjectId(sectionId) },
-        { $set: { ...updatedRecord, updatedAt: new Date() } }
+        { $set: { ...updatedRecord, updatedAt: new Date() } },
       );
 
     if (updateQuery.matchedCount === 0) {

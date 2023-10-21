@@ -21,8 +21,6 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   return json({ mail: null });
 };
 
-export type SectionLoader = typeof loader;
-
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
     { title: `${data?.mail?.name} / ${SITE_TITLE}` },
@@ -46,7 +44,7 @@ export default function MailPage() {
       <div className="flex h-full w-full flex-col overflow-hidden">
         <div className="space-y-1 border-b p-2">
           <div className="flex items-center justify-between">
-            <p className="font-outfit font-medium line-clamp-1">
+            <p className="line-clamp-1 font-outfit font-medium">
               {mail.subject}
             </p>
             <div className="flex items-center">
@@ -56,9 +54,9 @@ export default function MailPage() {
           </div>
         </div>
         <div className="flex-1 space-y-6 overflow-y-auto p-4">
-          <div className="flex items-start flex-wrap justify-between gap-1">
-            <p className="flex items-center flex-wrap gap-1">
-              <span className="font-medium font-outfit">{mail.name}</span>
+          <div className="flex flex-wrap items-start justify-between gap-1">
+            <p className="flex flex-wrap items-center gap-1">
+              <span className="font-outfit font-medium">{mail.name}</span>
               <span className="text-sm text-muted-foreground">{`<${mail.email}>`}</span>
               <span className="text-sm text-muted-foreground">{`(${mail.phone})`}</span>
             </p>
@@ -73,7 +71,7 @@ export default function MailPage() {
   }
 
   return (
-    <div className="h-full w-full p-2 grid place-content-center">
+    <div className="grid h-full w-full place-content-center p-2">
       <p>Mail not found!</p>
     </div>
   );

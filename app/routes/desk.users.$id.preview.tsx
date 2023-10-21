@@ -1,4 +1,5 @@
 import { useRouteLoaderData } from "@remix-run/react";
+import { Badge } from "~/components/ui/badge";
 import {
   Card,
   CardDescription,
@@ -14,7 +15,10 @@ export default function UserPreviewPage() {
     <div className="grid h-full w-full place-items-center overflow-y-auto p-4">
       <Card className="w-full max-w-md rounded-lg border shadow-lg">
         <CardHeader>
-          <CardTitle className="font-outfit">{user.name}</CardTitle>
+          <CardTitle className="flex items-center justify-between font-outfit">
+            <span>{user.name}</span>
+            <Badge>{user.role}</Badge>
+          </CardTitle>
           <CardDescription>{user.email}</CardDescription>
         </CardHeader>
       </Card>

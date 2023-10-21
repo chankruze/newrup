@@ -1,5 +1,9 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
-import { json, unstable_parseMultipartFormData } from "@remix-run/node";
+import {
+  json,
+  redirect,
+  unstable_parseMultipartFormData,
+} from "@remix-run/node";
 import { Form, useNavigation, useRouteLoaderData } from "@remix-run/react";
 import type { ChangeEvent } from "react";
 import { useEffect, useState } from "react";
@@ -15,7 +19,7 @@ import type { SectionLoader } from "./desk.sections.$id";
 export const action = async ({ request, params }: ActionFunctionArgs) => {
   const formData = await unstable_parseMultipartFormData(
     request,
-    uploadHandler
+    uploadHandler,
   );
 
   // get the form action and check if it's:
@@ -27,10 +31,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     case "save": {
       const { ok, error } = await updateSection(params.id as string, formData);
 
-      if (ok)
-        return json({
-          ok: true,
-        });
+      if (ok) return redirect(`/desk/sections/${params.id}/preview`);
 
       return json({ ok: false, error });
     }
@@ -50,7 +51,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 export default function SectionEditPage() {
   const { section } = useRouteLoaderData<SectionLoader>(
-    "routes/desk.sections.$id"
+    "routes/desk.sections.$id",
   );
 
   const { state } = useNavigation();
@@ -64,7 +65,7 @@ export default function SectionEditPage() {
   });
 
   const onChangeHandler = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
     setFormData((data) => ({
       ...data,
@@ -109,13 +110,13 @@ export default function SectionEditPage() {
           <div className="grid w-full items-center gap-2">
             <Label htmlFor="image">Image</Label>
             {section.image ? (
-              <p className="text-xs line-clamp-1">
+              <p className="line-clamp-1 text-xs">
                 Current:{" "}
                 <a
                   href={section.image}
                   target="_blank"
                   rel="noreferrer"
-                  className="italic underline text-blue-500"
+                  className="italic text-blue-500 underline"
                 >
                   {extractFileNameFromUrl(section.image)}
                 </a>
