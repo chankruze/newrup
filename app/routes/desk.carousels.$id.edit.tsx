@@ -1,5 +1,11 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
-import { json, unstable_parseMultipartFormData } from "@remix-run/node";
+import {
+  json,
+  redirect,
+  unstable_composeUploadHandlers,
+  unstable_createMemoryUploadHandler,
+  unstable_parseMultipartFormData,
+} from "@remix-run/node";
 import { Form, useNavigation, useRouteLoaderData } from "@remix-run/react";
 import type { ChangeEvent } from "react";
 import { useState } from "react";
@@ -8,14 +14,36 @@ import { Checkbox } from "~/components/ui/checkbox";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { updateCarousel } from "~/dao/carousels.server";
-import { uploadHandler } from "~/lib/upload.server";
+import { uploadImageToCloudinary } from "~/lib/upload.server";
 import { extractFileNameFromUrl } from "~/utils/extract-filename";
 import type { SectionLoader } from "./desk.sections.$id";
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
+  const uploadedImages: string[] = [];
+
+  const uploadHandler = unstable_composeUploadHandlers(
+    async ({ name, contentType, data, filename }) => {
+      if (name !== "images" || !filename) {
+        return undefined;
+      }
+
+      try {
+        const uploadedImage = await uploadImageToCloudinary(data);
+
+        if (uploadedImage?.secure_url) {
+          uploadedImages.push(uploadedImage.secure_url);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    // fallback to memory for everything else
+    unstable_createMemoryUploadHandler(),
+  );
+
   const formData = await unstable_parseMultipartFormData(
     request,
-    uploadHandler
+    uploadHandler,
   );
 
   // get the form action and check if it's:
@@ -25,12 +53,18 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
   switch (__action) {
     case "save": {
-      const { ok, error } = await updateCarousel(params.id as string, formData);
+      const name = formData.get("name") as string;
+      const description = formData.get("description") as string;
+      const shuffle = formData.get("shuffle") === "on";
 
-      if (ok)
-        return json({
-          ok: true,
-        });
+      const { ok, error } = await updateCarousel(params.id as string, {
+        name,
+        description,
+        shuffle,
+        images: uploadedImages,
+      });
+
+      if (ok) return redirect(`/desk/carousels/${params.id}/preview`);
 
       return json({ ok: false, error });
     }
@@ -50,7 +84,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 export default function CarouselEditPage() {
   const { carousel } = useRouteLoaderData<SectionLoader>(
-    "routes/desk.carousels.$id"
+    "routes/desk.carousels.$id",
   );
 
   const { state } = useNavigation();
@@ -63,7 +97,7 @@ export default function CarouselEditPage() {
   });
 
   const onChangeHandler = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
     setFormData((data) => ({
       ...data,
@@ -90,7 +124,7 @@ export default function CarouselEditPage() {
             />
           </div>
           <div className="grid w-full items-center gap-2">
-            <Label htmlFor="description">Position</Label>
+            <Label htmlFor="description">Description</Label>
             <Input
               type="text"
               id="description"
@@ -106,7 +140,7 @@ export default function CarouselEditPage() {
               id="images"
               name="images"
               accept="image/png, image/jpeg"
-              onChange={onChangeHandler}
+              multiple
             />
           </div>
           <div className="flex items-center gap-2">
@@ -125,7 +159,7 @@ export default function CarouselEditPage() {
                       <img
                         src={image}
                         alt={`Pic 1 of ${carousel.name}`}
-                        className="object-cover w-full h-full"
+                        className="h-full w-full object-cover"
                         loading="lazy"
                       />
                       {extractFileNameFromUrl(image)}

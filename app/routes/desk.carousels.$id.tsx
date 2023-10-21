@@ -21,7 +21,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   return json({ carousel: null });
 };
 
-export type SectionLoader = typeof loader;
+export type CarouselLoader = typeof loader;
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
@@ -30,7 +30,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
       property: "og:title",
       content: `${data?.carousel?.name} / ${SITE_TITLE}`,
     },
-    { name: "description", content: `${data?.carousel?.content}` },
+    { name: "description", content: `${data?.carousel?.description}` },
   ];
 };
 
@@ -48,7 +48,7 @@ export default function CarouselPage() {
       <div className="flex h-full w-full flex-col overflow-hidden">
         <div className="space-y-1 border-b p-2">
           <div className="flex items-center justify-between">
-            <p className="font-outfit font-medium line-clamp-1">
+            <p className="line-clamp-1 font-outfit font-medium">
               {carousel.name}
             </p>
             <div className="flex items-center">
@@ -61,7 +61,7 @@ export default function CarouselPage() {
               <NavLink
                 to="edit"
                 className={({ isActive, isPending }) =>
-                  cn("rounded px-2 py-1 text-sm", {
+                  cn("px-2 py-1 text-sm", {
                     "bg-primary text-primary-foreground": isActive,
                     "hover:bg-accent": !isActive,
                     "bg-red-400/10 text-red-400": isPending,
@@ -74,7 +74,7 @@ export default function CarouselPage() {
               <NavLink
                 to="preview"
                 className={({ isActive, isPending }) =>
-                  cn("rounded px-2 py-1 text-sm", {
+                  cn("px-2 py-1 text-sm", {
                     "bg-primary text-primary-foreground": isActive,
                     "hover:bg-accent": !isActive,
                     "bg-red-400/10 text-red-400": isPending,
@@ -99,7 +99,7 @@ export default function CarouselPage() {
   }
 
   return (
-    <div className="h-full w-full p-2 grid place-content-center">
+    <div className="grid h-full w-full place-content-center p-2">
       <p>Carousel not found!</p>
     </div>
   );
