@@ -4,6 +4,7 @@ import {
   Mailbox,
   Quote,
   Settings,
+  ShoppingBag,
   Text,
   Users,
 } from "lucide-react";
@@ -17,6 +18,11 @@ export const navLinks: NavLinkType[] = [
     to: "sections",
     label: "Sections",
     icon: Text,
+  },
+  {
+    to: "products",
+    label: "Products",
+    icon: ShoppingBag,
   },
   {
     to: "testimonials",
