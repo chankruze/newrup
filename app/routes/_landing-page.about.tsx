@@ -1,5 +1,11 @@
-import type { MetaFunction } from "@remix-run/node";
+import {
+  json,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+} from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import { SITE_DESCRIPTION, SITE_TITLE } from "~/consts";
+import { client } from "~/lib/db.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -9,6 +15,47 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const _db = await client.db(process.env.NEWRUP_DB);
+
+  const section = await _db.collection("sections").findOne({
+    title: "About us",
+  });
+
+  return json({
+    section,
+  });
+};
+
 export default function AboutPage() {
-  return <div>About</div>;
+  const { section } = useLoaderData<typeof loader>();
+
+  if (!section) return null;
+
+  return (
+    <main className="max-w-8xl mx-auto p-[5vw]">
+      <section className="mx-auto max-w-7xl space-y-6" id="contact">
+        <div className="space-y-2">
+          <h1 className="font-outfit text-3xl font-bold capitalize sm:text-4xl">
+            {section.title}
+          </h1>
+          {section.subtitle ? (
+            <h2 className="text-lg font-medium capitalize  text-muted-foreground sm:text-xl">
+              {section.subtitle}
+            </h2>
+          ) : null}
+        </div>
+        <div className="flex flex-wrap justify-between gap-4">
+          <div className="w-full space-y-4 sm:flex-1">
+            <p className="max-w-lg text-xl text-zinc-500 dark:text-zinc-400">
+              {section.description}
+            </p>
+          </div>
+          <div className="grid w-full place-items-end sm:flex-1">
+            <img src={section.image} alt={`${section.title}`} />
+          </div>
+        </div>
+      </section>
+    </main>
+  );
 }

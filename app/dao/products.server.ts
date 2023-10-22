@@ -26,17 +26,13 @@ export const getProduct = async (id: string) => {
 export const getAllProducts = async () => {
   const _db = await client.db(process.env.NEWRUP_DB);
 
-  try {
-    const _sections = await _db
-      .collection(PRODUCTS_COLLECTION)
-      .find({})
-      .sort({ name: 1, updatedAt: -1 })
-      .toArray();
+  const _products = await _db
+    .collection(PRODUCTS_COLLECTION)
+    .find({})
+    .sort({ name: 1, updatedAt: -1 })
+    .toArray();
 
-    return { ok: true, products: _sections };
-  } catch (error) {
-    return { ok: false, error };
-  }
+  return { ok: true, products: _products };
 };
 
 export const createProduct = async (productInfo: FormData) => {

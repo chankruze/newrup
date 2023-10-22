@@ -5,6 +5,11 @@ import { log } from "~/lib/logger.server";
 
 const PARTNERS_COLLECTION = "partners";
 
+export type Partner = {
+  name: string;
+  image: string;
+};
+
 const partnerCreateSchema = z.object({
   name: z.string().min(1, "Name must not be empty."),
   image: z.string(),
@@ -28,17 +33,13 @@ export const getPartner = async (id: string) => {
 export const getAllPartners = async () => {
   const _db = await client.db(process.env.NEWRUP_DB);
 
-  try {
-    const _sections = await _db
-      .collection(PARTNERS_COLLECTION)
-      .find({})
-      .sort({ name: 1, updatedAt: -1 })
-      .toArray();
+  const _partners = await _db
+    .collection(PARTNERS_COLLECTION)
+    .find({})
+    .sort({ name: 1, updatedAt: -1 })
+    .toArray();
 
-    return { ok: true, partners: _sections };
-  } catch (error) {
-    return { ok: false, error };
-  }
+  return { ok: true, partners: _partners };
 };
 
 export const createPartner = async (data: any) => {

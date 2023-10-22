@@ -1,0 +1,128 @@
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { Link, useLoaderData } from "@remix-run/react";
+import { ArrowRight } from "lucide-react";
+import { SocialLink } from "~/components/social-links";
+import { SITE_DESCRIPTION, SITE_TITLE, socialLinks } from "~/consts";
+import { getAllPartners } from "~/dao/partners.server";
+import { client } from "~/lib/db.server";
+import { StatsCard } from "./StatsCard";
+import { Partners } from "./partners";
+import { statsData } from "./stats-data";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: SITE_TITLE },
+    { name: "og:title", content: SITE_TITLE },
+    { name: "description", content: SITE_DESCRIPTION },
+  ];
+};
+
+export const loader = async (_: LoaderFunctionArgs) => {
+  const _db = await client.db(process.env.NEWRUP_DB);
+
+  const carousel = await _db.collection("carousels").findOne({
+    domId: "hero-carousel",
+  });
+
+  const { partners } = await getAllPartners();
+
+  return json({
+    carousel,
+    partners,
+  });
+};
+
+export default function Home() {
+  const { carousel, partners } = useLoaderData<typeof loader>();
+
+  return (
+    <main className="max-w-8xl mx-auto p-[5vw]">
+      <header className="relative mx-auto flex min-h-screen max-w-7xl flex-wrap justify-between gap-12 sm:gap-16">
+        {/* left */}
+        <div className="flex flex-col gap-4 lg:pt-12">
+          <p className="font-roboto-mono text-4xl text-zinc-500 dark:text-zinc-400">
+            We're
+          </p>
+          <h1 className="font-outfit text-7xl font-black">
+            Newrup Tech <br /> Solutions
+          </h1>
+          <div className="h-2 w-64 bg-blue-400 dark:bg-yellow-400"></div>
+          <p className="max-w-md font-outfit text-xl text-zinc-500 dark:text-zinc-400">
+            {SITE_DESCRIPTION}
+          </p>
+        </div>
+        {/* right */}
+        <div className="z-10 order-2 flex flex-col gap-4">
+          <p className="font-outfit text-xl font-medium dark:text-zinc-300 sm:max-w-sm sm:text-2xl lg:max-w-md">
+            Let's build quality products and solve some real world problems with
+            our services.
+          </p>
+          <Link
+            to="#services"
+            className="flex items-center gap-2 font-outfit font-medium text-blue-500 dark:text-yellow-400 sm:text-lg"
+          >
+            <span>Read More</span>
+            <span>
+              <ArrowRight className="h-6 w-6" />
+            </span>
+          </Link>
+          <div className="flex items-center justify-center gap-4 sm:justify-start lg:justify-end">
+            {socialLinks.slice(0, 5).map((link) => (
+              <SocialLink key={link.name} {...link} />
+            ))}
+          </div>
+        </div>
+        {/* avatar */}
+        {/* round circle */}
+        {/* <div className="absolute -z-10 hidden h-[28rem] w-[28rem] rounded-full bg-zinc-100 dark:bg-zinc-800 lg:left-1/2 lg:top-1/4 lg:block lg:-translate-x-1/3 lg:-translate-y-1/2"></div> */}
+        {/* image */}
+        {/* <div className="order-1 overflow-hidden rounded-3xl bg-zinc-100 dark:bg-zinc-800 lg:absolute lg:left-1/2 lg:top-1/4 lg:-translate-x-1/3 lg:-translate-y-1/3 lg:rounded-3xl lg:bg-transparent">
+          <img
+            src="https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?auto=format&fit=crop&q=80&w=1887&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            alt={`${SITE_TITLE_SHORT} Logo`}
+            className="w-[24rem] lg:[w-32rem]"
+            loading="lazy"
+          />
+        </div> */}
+      </header>
+      <section
+        id="partners"
+        className="mx-auto flex max-w-7xl flex-wrap justify-between gap-4 space-y-4 py-12"
+      >
+        <h1 className="w-full text-center font-outfit text-2xl font-medium capitalize sm:text-3xl">
+          Our Partners
+        </h1>
+        <Partners partners={partners} />
+      </section>
+      {/* stats */}
+      <section
+        id="services"
+        className="mx-auto flex max-w-7xl flex-wrap justify-between gap-4 py-12"
+      >
+        {/* left */}
+        <div className="space-y-4">
+          <h1 className="text-3xl font-bold capitalize sm:text-4xl">
+            What can We do for you
+          </h1>
+          <p className="max-w-lg  text-xl text-zinc-500 dark:text-zinc-400">
+            We understand that each client has unique goals and challenges,
+            which is why We offer personalized attention, cost-effective
+            strategies, and innovative ideas to help you achieve success.
+            <br />
+            <br />
+            Whether you need help with a specific project or ongoing support for
+            your business, We are here to provide tailored solutions and expert
+            guidance that meets your specific needs.
+          </p>
+        </div>
+        {/* right */}
+        <div className="grid w-full gap-4 sm:col-start-3 sm:w-auto sm:grid-cols-2">
+          {statsData.map((stats) => (
+            <StatsCard key={stats.id} {...stats} />
+          ))}
+        </div>
+      </section>
+    </main>
+  );
+}

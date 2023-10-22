@@ -31,7 +31,7 @@ export const getAllCertifications = async () => {
   const _certifications = await _db
     .collection(CERTIFICATIONS_COLLECTION)
     .find({})
-    .sort({ createdAt: -1 })
+    .sort({ createdAt: -1, updatedAt: -1 })
     .toArray();
 
   return { ok: true, certifications: _certifications };
@@ -77,7 +77,7 @@ export const createCertification = async (formData: FormData) => {
 
 export const updateCertification = async (
   certificationId: string,
-  formData: FormData
+  formData: FormData,
 ) => {
   // validate form data
   const _validation = certificationSchema.safeParse(formToJSON(formData));
@@ -117,7 +117,7 @@ export const updateCertification = async (
       .collection(CERTIFICATIONS_COLLECTION)
       .updateOne(
         { _id: new ObjectId(certificationId) },
-        { $set: { ...updatedRecord, updatedAt: new Date() } }
+        { $set: { ...updatedRecord, updatedAt: new Date() } },
       );
 
     if (updateQuery.matchedCount === 0) {

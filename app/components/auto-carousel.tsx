@@ -27,16 +27,24 @@ export const AutoCarousel = ({
   };
 
   return (
-    <div className="relative">
+    <div className="relative h-full w-full">
       <div className="carousel-container">
         {images.map((image, index) => (
           <div
             key={index}
-            className={cn("hidden transition-all duration-500 ease-in-out", {
-              block: index === currentIndex,
-            })}
+            className={cn(
+              "h-full hidden w-full transition-all duration-500 ease-in-out",
+              {
+                block: index === currentIndex,
+              },
+            )}
           >
-            <img src={image} alt={`Slide ${index}`} loading="lazy" />
+            <img
+              src={image}
+              alt={`Slide ${index}`}
+              loading="lazy"
+              className="object-cover"
+            />
           </div>
         ))}
       </div>

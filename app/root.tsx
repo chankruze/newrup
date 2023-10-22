@@ -17,6 +17,7 @@ import {
 import NProgress from "nprogress";
 import nProgressStyles from "nprogress/nprogress.css";
 import { useEffect } from "react";
+import { Toaster } from "sonner";
 import styles from "~/tailwind.css";
 import { getThemeSession } from "./lib/theme.server";
 import {
@@ -65,6 +66,7 @@ function App() {
       </head>
       <body>
         <Outlet />
+        <Toaster />
         <ThemeBody ssrTheme={Boolean(data.theme)} />
         <ScrollRestoration />
         <Scripts />

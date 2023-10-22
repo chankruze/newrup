@@ -9,6 +9,10 @@ export const navLinks: NavLink[] = [
     label: "About",
   },
   {
+    to: "products",
+    label: "Products",
+  },
+  {
     to: "portfolio",
     label: "Portfolio",
   },

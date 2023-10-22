@@ -1,13 +1,16 @@
 import { Outlet } from "@remix-run/react";
-import { Topbar } from "./topbar";
+import { Credits } from "./credits";
+import { Footer } from "./footer";
+import { Navbar } from "./navbar";
 
 export default function LandingPageLayout() {
   return (
     <>
-      <Topbar />
-      <main>
-        <Outlet />
-      </main>
+      {/* <Topbar /> */}
+      <Navbar />
+      <Outlet />
+      <Footer />
+      <Credits />
     </>
   );
 }

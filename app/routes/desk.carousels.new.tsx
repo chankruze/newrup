@@ -8,6 +8,7 @@ import {
 } from "@remix-run/node";
 import { Form, useNavigate, useNavigation } from "@remix-run/react";
 import { X } from "lucide-react";
+import { useState, type ChangeEvent } from "react";
 import { ActionButton } from "~/components/action-button";
 import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
@@ -16,6 +17,7 @@ import { Label } from "~/components/ui/label";
 import { SITE_DESCRIPTION, SITE_TITLE } from "~/consts";
 import { createCarousel } from "~/dao/carousels.server";
 import { uploadImageToCloudinary } from "~/lib/upload.server";
+import { generateSlug } from "~/utils/generate-slug";
 
 export const meta: MetaFunction = () => {
   return [
@@ -58,11 +60,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   switch (__action) {
     case "create": {
       const name = formData.get("name") as string;
+      const domId = formData.get("domId") as string;
       const description = formData.get("description") as string;
       const shuffle = formData.get("shuffle") === "on";
 
       const { id, error } = await createCarousel({
         name,
+        domId,
         description,
         shuffle,
         images: uploadedImages,
@@ -82,10 +86,18 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export default function NewCarouselPage() {
   const navigate = useNavigate();
   const { state } = useNavigation();
+  const [domId, setDomId] = useState("");
 
   const busy = state === "submitting";
 
   const back = () => navigate("/desk/carousels");
+
+  const generateDomId = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target) {
+      const _domId = generateSlug(e.target.value);
+      setDomId(_domId);
+    }
+  };
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden">
@@ -102,7 +114,17 @@ export default function NewCarouselPage() {
           >
             <div className="grid w-full items-center gap-2">
               <Label htmlFor="name">Name</Label>
-              <Input type="text" id="name" name="name" required />
+              <Input
+                type="text"
+                id="name"
+                name="name"
+                onChange={generateDomId}
+                required
+              />
+            </div>
+            <div className="grid w-full items-center gap-2">
+              <Label htmlFor="domId">DOM Id</Label>
+              <Input type="text" id="domId" name="domId" value={domId} />
             </div>
             <div className="grid w-full items-center gap-2">
               <Label htmlFor="description">Description</Label>

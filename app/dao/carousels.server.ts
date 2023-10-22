@@ -7,6 +7,7 @@ const CAROUSELS_COLLECTION = "carousels";
 
 const carouselSchema = z.object({
   name: z.string().min(1, "Name must not be empty."),
+  domId: z.string().min(1, "DOM ID must not be empty."),
   description: z.string().min(1, "Description must not be empty."),
   images: z.array(z.string()),
 });
@@ -35,6 +36,7 @@ export const getAllCarousels = async () => {
 
 export type CarouselInfo = {
   name: string;
+  domId: string;
   description: string;
   images: string[];
   shuffle: boolean;
@@ -74,7 +76,7 @@ export const createCarousel = async (data: CarouselInfo) => {
 
 export const updateCarousel = async (
   carouselId: string,
-  data: CarouselInfo
+  data: CarouselInfo,
 ) => {
   // validate form data
   const _validation = carouselSchema.safeParse(data);
@@ -102,6 +104,10 @@ export const updateCarousel = async (
     updatedRecord.name = _validation.data.name;
   }
 
+  if (_validation.data.domId !== undefined) {
+    updatedRecord.domId = _validation.data.domId;
+  }
+
   if (_validation.data.description !== undefined) {
     updatedRecord.description = _validation.data.description;
   }
@@ -115,7 +121,7 @@ export const updateCarousel = async (
       .collection(CAROUSELS_COLLECTION)
       .updateOne(
         { _id: new ObjectId(carouselId) },
-        { $set: { ...updatedRecord, updatedAt: new Date() } }
+        { $set: { ...updatedRecord, updatedAt: new Date() } },
       );
 
     if (updateQuery.matchedCount === 0) {

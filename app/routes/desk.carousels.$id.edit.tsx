@@ -16,6 +16,7 @@ import { Label } from "~/components/ui/label";
 import { updateCarousel } from "~/dao/carousels.server";
 import { uploadImageToCloudinary } from "~/lib/upload.server";
 import { extractFileNameFromUrl } from "~/utils/extract-filename";
+import { generateSlug } from "~/utils/generate-slug";
 import type { SectionLoader } from "./desk.sections.$id";
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
@@ -54,11 +55,13 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   switch (__action) {
     case "save": {
       const name = formData.get("name") as string;
+      const domId = formData.get("domId") as string;
       const description = formData.get("description") as string;
       const shuffle = formData.get("shuffle") === "on";
 
       const { ok, error } = await updateCarousel(params.id as string, {
         name,
+        domId,
         description,
         shuffle,
         images: uploadedImages,
@@ -86,15 +89,14 @@ export default function CarouselEditPage() {
   const { carousel } = useRouteLoaderData<SectionLoader>(
     "routes/desk.carousels.$id",
   );
-
   const { state } = useNavigation();
-
-  const busy = state === "submitting";
-
   const [formData, setFormData] = useState({
     name: carousel.name || "",
+    domId: carousel.domId || "",
     description: carousel.description || "",
   });
+
+  const busy = state === "submitting";
 
   const onChangeHandler = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -103,6 +105,14 @@ export default function CarouselEditPage() {
       ...data,
       [e.target.name]: e.target.value,
     }));
+
+    if (e.target.name === "name") {
+      const _domId = generateSlug(e.target.value);
+      setFormData((data) => ({
+        ...data,
+        domId: _domId,
+      }));
+    }
   };
 
   return (
@@ -121,6 +131,16 @@ export default function CarouselEditPage() {
               name="name"
               onChange={onChangeHandler}
               value={formData.name}
+            />
+          </div>
+          <div className="grid w-full items-center gap-2">
+            <Label htmlFor="domId">DOM Id</Label>
+            <Input
+              type="text"
+              id="domId"
+              name="domId"
+              onChange={onChangeHandler}
+              value={formData.domId}
             />
           </div>
           <div className="grid w-full items-center gap-2">

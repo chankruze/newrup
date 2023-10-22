@@ -6,6 +6,14 @@ import { formToJSON } from "~/utils/form-helper.server";
 
 const MAILS_COLLECTION = "mails";
 
+const mailSchema = z.object({
+  name: z.string().min(1, "Name must not be empty."),
+  phone: z.string().min(1, "Phone must not be empty."),
+  email: z.string().min(1, "Name must not be empty.").email(),
+  subject: z.string().min(1, "Subject must not be empty."),
+  message: z.string().min(1, "Message must not be empty."),
+});
+
 export const getMail = async (id: string) => {
   const _db = await client.db(process.env.NEWRUP_DB);
 
@@ -30,16 +38,30 @@ export const getAllMails = async () => {
 
 export type MailInfo = {
   name: string;
-  description: string;
-  images: string;
+  subject: string;
+  email: string;
+  phone: string;
+  message: string;
 };
 
-export const createMail = async (mailInfo: MailInfo) => {
+export const createMail = async (data: MailInfo) => {
   const _db = await client.db(process.env.NEWRUP_DB);
+
+  // validate form data
+  const _validation = mailSchema.safeParse(data);
+  // send error data in response
+  if (!_validation.success) {
+    const errors = _validation.error.flatten();
+    // return validation errors
+    return {
+      ok: false,
+      error: errors,
+    };
+  }
 
   try {
     const _mail = await _db.collection(MAILS_COLLECTION).insertOne({
-      ...mailInfo,
+      ..._validation.data,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -51,14 +73,6 @@ export const createMail = async (mailInfo: MailInfo) => {
 };
 
 export const updateMail = async (mailId: string, mailInfo: FormData) => {
-  const mailSchema = z.object({
-    subject: z.string().min(1, "Subject must not be empty."),
-    name: z.string().min(1, "Name must not be empty."),
-    email: z.string().min(1, "Name must not be empty.").email(),
-    phone: z.string().min(1, "Phone must not be empty."),
-    message: z.string().min(1, "Message must not be empty."),
-  });
-
   // validate form data
   const _validation = mailSchema.safeParse(formToJSON(mailInfo));
   // send error data in response
