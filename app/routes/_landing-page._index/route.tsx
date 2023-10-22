@@ -5,10 +5,12 @@ import { ArrowRight } from "lucide-react";
 import { SocialLink } from "~/components/social-links";
 import { SITE_DESCRIPTION, SITE_TITLE, socialLinks } from "~/consts";
 import { getAllPartners } from "~/dao/partners.server";
+import { getAllTestimonials } from "~/dao/testimonials.server";
 import { client } from "~/lib/db.server";
 import { StatsCard } from "./StatsCard";
 import { Partners } from "./partners";
 import { statsData } from "./stats-data";
+import { Testimonials } from "./testimonials";
 
 export const meta: MetaFunction = () => {
   return [
@@ -24,17 +26,25 @@ export const loader = async (_: LoaderFunctionArgs) => {
   const carousel = await _db.collection("carousels").findOne({
     domId: "hero-carousel",
   });
+  const testimonialsSection = await _db.collection("sections").findOne({
+    title: "Testimonials",
+  });
 
+  const { testimonials } = await getAllTestimonials();
   const { partners } = await getAllPartners();
 
   return json({
     carousel,
     partners,
+    testimonials: {
+      data: testimonials,
+      section: testimonialsSection,
+    },
   });
 };
 
 export default function Home() {
-  const { carousel, partners } = useLoaderData<typeof loader>();
+  const { carousel, partners, testimonials } = useLoaderData<typeof loader>();
 
   return (
     <main className="max-w-8xl mx-auto p-[5vw]">
@@ -88,9 +98,9 @@ export default function Home() {
       </header>
       <section
         id="partners"
-        className="mx-auto flex max-w-7xl flex-wrap justify-between gap-4 space-y-4 py-12"
+        className="mx-auto flex max-w-7xl flex-wrap justify-between gap-4 space-y-4 pb-12"
       >
-        <h1 className="w-full text-center font-outfit text-2xl font-medium capitalize sm:text-3xl">
+        <h1 className="font-outfit text-3xl font-bold capitalize sm:text-4xl">
           Our Partners
         </h1>
         <Partners partners={partners} />
@@ -117,12 +127,36 @@ export default function Home() {
           </p>
         </div>
         {/* right */}
-        <div className="grid w-full gap-4 sm:col-start-3 sm:w-auto sm:grid-cols-2">
+        <div className="grid w-full place-content-start gap-4 sm:col-start-3 sm:w-auto sm:grid-cols-2">
           {statsData.map((stats) => (
             <StatsCard key={stats.id} {...stats} />
           ))}
         </div>
       </section>
+      {/* testimonials */}
+      {testimonials.data && testimonials.section ? (
+        <section
+          id="testimonials"
+          className="mx-auto min-h-screen max-w-7xl space-y-4 py-12"
+        >
+          <div className="space-y-2">
+            <h1 className="font-outfit text-3xl font-bold capitalize sm:text-4xl">
+              {testimonials.section.title}
+            </h1>
+            {testimonials.section.subtitle ? (
+              <h2 className="text-lg font-medium capitalize  text-muted-foreground sm:text-xl">
+                {testimonials.section.subtitle}
+              </h2>
+            ) : null}
+          </div>
+          <div className="w-full space-y-4 sm:flex-1">
+            <p className="text-lg">{testimonials.section.description}</p>
+          </div>
+          <div className="pt-12">
+            <Testimonials testimonials={testimonials.data} />
+          </div>
+        </section>
+      ) : null}
     </main>
   );
 }

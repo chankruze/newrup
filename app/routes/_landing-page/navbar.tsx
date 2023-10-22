@@ -1,6 +1,5 @@
 import { Link, NavLink } from "@remix-run/react";
 import clsx from "clsx";
-import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { ThemeToggle } from "~/components/theme-toggle";
 import { SITE_TITLE } from "~/consts";
@@ -48,7 +47,7 @@ export const Navbar = () => {
           {/* theme toggle */}
           <ThemeToggle />
           {/* menu toggle */}
-          <button
+          {/* <button
             className="relative inline-flex items-center justify-center rounded-full p-2 transition md:hidden"
             onClick={toggleMenu}
           >
@@ -76,7 +75,7 @@ export const Navbar = () => {
                 ></path>
               </svg>
             </div>
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

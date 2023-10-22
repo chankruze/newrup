@@ -7,7 +7,6 @@ type Props = {
 };
 
 export const Partners = ({ partners }: Props) => {
-  console.log({ partners });
   return (
     <Swiper
       grabCursor={true}
