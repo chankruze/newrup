@@ -4,57 +4,57 @@ import { Link, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { Edit, MoreVertical } from "lucide-react";
 import { ActionButton } from "~/components/action-button";
 import { ErrorBoundaryComponent } from "~/components/error-boundary";
+import { NavListItem } from "~/components/nav-list-item";
 import { Separator } from "~/components/ui/separator";
-import { getAllSections } from "~/dao/sections.server";
+import { getAllProducts } from "~/dao/products.server";
 import { requireUserId } from "~/lib/session.server";
 import { cn } from "~/lib/utils";
-import { SectionListItem } from "./section-list-item";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await requireUserId(request);
 
-  const { sections } = await getAllSections();
+  const { products } = await getAllProducts();
 
-  if (sections) return json({ sections });
+  if (products) return json({ products });
 
-  return json({ userId, sections: [] });
+  return json({ userId, products: [] });
 };
 
-export default function SectionsLayout() {
+export default function ProductsLayout() {
   const location = useLocation();
-  const hideParent = location.pathname !== "/desk/sections";
-  const { sections } = useLoaderData<typeof loader>();
+  const hideParent = location.pathname !== "/desk/products";
+  const { products } = useLoaderData<typeof loader>();
 
   return (
     <div className="flex h-full overflow-hidden">
       <div
-        className={cn("w-full flex-col border-r flex md:w-72", {
-          "md:flex hidden": hideParent,
+        className={cn("flex w-full flex-col border-r md:w-72", {
+          "hidden md:flex": hideParent,
         })}
       >
         <div className="flex items-center justify-between p-2">
-          <p className="font-outfit font-medium">Sections</p>
+          <p className="font-outfit font-medium">Products</p>
           <div className="flex items-center">
             <Link to="new">
-              <ActionButton icon={Edit} tooltip="Add section" />
+              <ActionButton icon={Edit} tooltip="Add product" />
             </Link>
             <ActionButton icon={MoreVertical} tooltip="Show menu" />
           </div>
         </div>
         <Separator />
-        {sections.length > 0 ? (
+        {products.length > 0 ? (
           <div className="flex-1 space-y-1 overflow-y-auto">
-            {sections.map((section) => (
-              <SectionListItem
-                key={section._id.toString()}
-                title={section.title}
-                to={section._id.toString()}
+            {products.map((product) => (
+              <NavListItem
+                key={product._id.toString()}
+                label={product.title}
+                to={product._id.toString()}
               />
             ))}
           </div>
         ) : (
-          <div className="h-full flex justify-center items-center p-2">
-            <p>No sections found</p>
+          <div className="flex h-full items-center justify-center p-2">
+            <p>No products found</p>
           </div>
         )}
       </div>

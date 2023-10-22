@@ -1,4 +1,4 @@
-import { Autoplay } from "swiper/modules";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
 
@@ -17,13 +17,21 @@ export const ImageCarousel = ({ images }: Props) => {
       }}
       centeredSlides={true}
       slidesPerView={1}
-      modules={[Autoplay]}
+      modules={[Autoplay, Pagination, Navigation]}
+      pagination={{
+        clickable: true,
+      }}
+      navigation={true}
       loop={true}
-      className="h-full w-full"
+      className="h-[480px] overflow-hidden rounded-lg"
     >
       {images.map((image) => (
-        <SwiperSlide key={image} className="w-24">
-          <img src={image} alt={image} className="block w-full object-cover" />
+        <SwiperSlide key={image} className="bg-cover bg-center">
+          <img
+            src={image}
+            alt={image}
+            className="block h-full w-full object-cover"
+          />
         </SwiperSlide>
       ))}
     </Swiper>

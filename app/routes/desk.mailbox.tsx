@@ -1,60 +1,57 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Link, Outlet, useLoaderData, useLocation } from "@remix-run/react";
-import { Edit, MoreVertical } from "lucide-react";
+import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
+import { MoreVertical } from "lucide-react";
 import { ActionButton } from "~/components/action-button";
 import { ErrorBoundaryComponent } from "~/components/error-boundary";
+import { NavListItem } from "~/components/nav-list-item";
 import { Separator } from "~/components/ui/separator";
-import { getAllCarousels } from "~/dao/carousels.server";
+import { getAllMails } from "~/dao/mails.server";
 import { requireUserId } from "~/lib/session.server";
 import { cn } from "~/lib/utils";
-import { CarouselListItem } from "./carousel-list-item";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await requireUserId(request);
 
-  const { carousels } = await getAllCarousels();
+  const { mails } = await getAllMails();
 
-  if (carousels) return json({ carousels });
+  if (mails) return json({ mails });
 
-  return json({ userId, carousels: [] });
+  return json({ userId, mails: [] });
 };
 
-export default function CarouselsLayout() {
+export default function MailsLayout() {
   const location = useLocation();
-  const hideParent = location.pathname !== "/desk/carousels";
-  const { carousels } = useLoaderData<typeof loader>();
+  const hideParent = location.pathname !== "/desk/mailbox";
+  const { mails } = useLoaderData<typeof loader>();
 
   return (
     <div className="flex h-full overflow-hidden">
       <div
-        className={cn("w-full flex-col border-r flex md:w-72", {
-          "md:flex hidden": hideParent,
+        className={cn("flex w-full flex-col border-r md:w-72", {
+          "hidden md:flex": hideParent,
         })}
       >
         <div className="flex items-center justify-between p-2">
-          <p className="font-outfit font-medium">Carousels</p>
+          <p className="font-outfit font-medium">Mails</p>
           <div className="flex items-center">
-            <Link to="new">
-              <ActionButton icon={Edit} tooltip="Add carousel" />
-            </Link>
             <ActionButton icon={MoreVertical} tooltip="Show menu" />
           </div>
         </div>
         <Separator />
-        {carousels.length > 0 ? (
+        {mails.length > 0 ? (
           <div className="flex-1 space-y-1 overflow-y-auto">
-            {carousels.map((carousel) => (
-              <CarouselListItem
-                key={carousel._id.toString()}
-                name={carousel.name}
-                to={carousel._id.toString()}
+            {mails.map((mail) => (
+              <NavListItem
+                key={mail._id.toString()}
+                label={mail.name}
+                to={mail._id.toString()}
               />
             ))}
           </div>
         ) : (
-          <div className="h-full flex justify-center items-center p-2">
-            <p>No carousels found</p>
+          <div className="flex h-full items-center justify-center p-2">
+            <p>No mails found</p>
           </div>
         )}
       </div>

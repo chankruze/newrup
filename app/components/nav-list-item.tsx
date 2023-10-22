@@ -2,13 +2,13 @@ import { NavLink } from "@remix-run/react";
 import { Loader, type LucideIcon } from "lucide-react";
 import { cn } from "~/lib/utils";
 
-export type NavItemProps = {
+export type NavListItemProps = {
   to: string;
   label: string;
-  icon: LucideIcon;
+  icon?: LucideIcon;
 };
 
-export const NavItem = ({ to, label, icon: Icon }: NavItemProps) => {
+export const NavListItem = ({ to, label, icon: Icon }: NavListItemProps) => {
   return (
     <li className="flex">
       <NavLink
@@ -20,20 +20,20 @@ export const NavItem = ({ to, label, icon: Icon }: NavItemProps) => {
               "bg-primary text-primary-foreground": isActive,
               "hover:bg-accent": !isActive,
               "bg-red-400/10 text-red-400": isPending,
-            }
+            },
           )
         }
       >
         {({ isPending }) => (
           <>
             <div className="flex items-center gap-3">
-              <Icon className="h-5 w-5" />
+              {Icon ? <Icon className="h-5 w-5" /> : null}
               <span>{label}</span>
             </div>
             {isPending ? (
               <div>
                 <span>
-                  <Loader />
+                  <Loader className="animate-spin" />
                 </span>
               </div>
             ) : null}

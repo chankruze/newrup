@@ -8,6 +8,7 @@ import { getAllPartners } from "~/dao/partners.server";
 import { getAllTestimonials } from "~/dao/testimonials.server";
 import { client } from "~/lib/db.server";
 import { StatsCard } from "./StatsCard";
+import { ImageCarousel } from "./image-carousel";
 import { Partners } from "./partners";
 import { statsData } from "./stats-data";
 import { Testimonials } from "./testimonials";
@@ -48,7 +49,7 @@ export default function Home() {
 
   return (
     <main className="max-w-8xl mx-auto p-[5vw]">
-      <header className="relative mx-auto flex min-h-screen max-w-7xl flex-wrap justify-between gap-12 sm:gap-16">
+      <header className="relative mx-auto flex max-w-7xl flex-wrap justify-between gap-12 sm:gap-16 py-12">
         {/* left */}
         <div className="flex flex-col gap-4 lg:pt-12">
           <p className="font-roboto-mono text-4xl text-zinc-500 dark:text-zinc-400">
@@ -83,22 +84,16 @@ export default function Home() {
             ))}
           </div>
         </div>
-        {/* avatar */}
-        {/* round circle */}
-        {/* <div className="absolute -z-10 hidden h-[28rem] w-[28rem] rounded-full bg-zinc-100 dark:bg-zinc-800 lg:left-1/2 lg:top-1/4 lg:block lg:-translate-x-1/3 lg:-translate-y-1/2"></div> */}
-        {/* image */}
-        {/* <div className="order-1 overflow-hidden rounded-3xl bg-zinc-100 dark:bg-zinc-800 lg:absolute lg:left-1/2 lg:top-1/4 lg:-translate-x-1/3 lg:-translate-y-1/3 lg:rounded-3xl lg:bg-transparent">
-          <img
-            src="https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?auto=format&fit=crop&q=80&w=1887&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt={`${SITE_TITLE_SHORT} Logo`}
-            className="w-[24rem] lg:[w-32rem]"
-            loading="lazy"
-          />
-        </div> */}
       </header>
+      {carousel ? (
+        <section className="mx-auto flex max-w-7xl flex-wrap justify-between gap-4 space-y-4 py-24">
+          <ImageCarousel images={carousel.images} />
+        </section>
+      ) : null}
+      {/* partners */}
       <section
         id="partners"
-        className="mx-auto flex max-w-7xl flex-wrap justify-between gap-4 space-y-4 pb-12"
+        className="mx-auto flex max-w-7xl flex-wrap justify-between gap-4 space-y-4 py-12"
       >
         <h1 className="font-outfit text-3xl font-bold capitalize sm:text-4xl">
           Our Partners

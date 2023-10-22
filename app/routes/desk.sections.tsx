@@ -4,57 +4,57 @@ import { Link, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { Edit, MoreVertical } from "lucide-react";
 import { ActionButton } from "~/components/action-button";
 import { ErrorBoundaryComponent } from "~/components/error-boundary";
+import { NavListItem } from "~/components/nav-list-item";
 import { Separator } from "~/components/ui/separator";
-import { getAllTestimonials } from "~/dao/testimonials.server";
+import { getAllSections } from "~/dao/sections.server";
 import { requireUserId } from "~/lib/session.server";
 import { cn } from "~/lib/utils";
-import { TestimonyListItem } from "./testimony-list-item";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await requireUserId(request);
 
-  const { testimonials } = await getAllTestimonials();
+  const { sections } = await getAllSections();
 
-  if (testimonials) return json({ testimonials });
+  if (sections) return json({ sections });
 
-  return json({ userId, testimonials: [] });
+  return json({ userId, sections: [] });
 };
 
-export default function TestimonysLayout() {
+export default function SectionsLayout() {
   const location = useLocation();
-  const hideParent = location.pathname !== "/desk/testimonials";
-  const { testimonials } = useLoaderData<typeof loader>();
+  const hideParent = location.pathname !== "/desk/sections";
+  const { sections } = useLoaderData<typeof loader>();
 
   return (
     <div className="flex h-full overflow-hidden">
       <div
-        className={cn("w-full flex-col border-r flex md:w-72", {
-          "md:flex hidden": hideParent,
+        className={cn("flex w-full flex-col border-r md:w-72", {
+          "hidden md:flex": hideParent,
         })}
       >
         <div className="flex items-center justify-between p-2">
-          <p className="font-outfit font-medium">Testimonials</p>
+          <p className="font-outfit font-medium">Sections</p>
           <div className="flex items-center">
             <Link to="new">
-              <ActionButton icon={Edit} tooltip="Add testimony" />
+              <ActionButton icon={Edit} tooltip="Add section" />
             </Link>
             <ActionButton icon={MoreVertical} tooltip="Show menu" />
           </div>
         </div>
         <Separator />
-        {testimonials.length > 0 ? (
+        {sections.length > 0 ? (
           <div className="flex-1 space-y-1 overflow-y-auto">
-            {testimonials.map((testimony) => (
-              <TestimonyListItem
-                key={testimony._id.toString()}
-                title={testimony.name}
-                to={testimony._id.toString()}
+            {sections.map((section) => (
+              <NavListItem
+                key={section._id.toString()}
+                label={section.title}
+                to={section._id.toString()}
               />
             ))}
           </div>
         ) : (
-          <div className="h-full flex justify-center items-center p-2">
-            <p>No testimonials found</p>
+          <div className="flex h-full items-center justify-center p-2">
+            <p>No sections found</p>
           </div>
         )}
       </div>

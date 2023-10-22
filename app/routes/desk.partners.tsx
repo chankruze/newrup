@@ -4,11 +4,11 @@ import { Link, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { Edit, MoreVertical } from "lucide-react";
 import { ActionButton } from "~/components/action-button";
 import { ErrorBoundaryComponent } from "~/components/error-boundary";
+import { NavListItem } from "~/components/nav-list-item";
 import { Separator } from "~/components/ui/separator";
 import { getAllPartners } from "~/dao/partners.server";
 import { requireUserId } from "~/lib/session.server";
 import { cn } from "~/lib/utils";
-import { PartnerListItem } from "./partner-list-item";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await requireUserId(request);
@@ -45,9 +45,9 @@ export default function PartnersLayout() {
         {partners.length > 0 ? (
           <div className="flex-1 space-y-1 overflow-y-auto">
             {partners.map((partner) => (
-              <PartnerListItem
+              <NavListItem
                 key={partner._id.toString()}
-                name={partner.name}
+                label={partner.name}
                 to={partner._id.toString()}
               />
             ))}

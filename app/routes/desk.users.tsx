@@ -1,57 +1,60 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
-import { MoreVertical } from "lucide-react";
+import { Link, Outlet, useLoaderData, useLocation } from "@remix-run/react";
+import { Edit, MoreVertical } from "lucide-react";
 import { ActionButton } from "~/components/action-button";
 import { ErrorBoundaryComponent } from "~/components/error-boundary";
+import { NavListItem } from "~/components/nav-list-item";
 import { Separator } from "~/components/ui/separator";
-import { getAllMails } from "~/dao/mails.server";
+import { getAllUsers } from "~/dao/users.server";
 import { requireUserId } from "~/lib/session.server";
 import { cn } from "~/lib/utils";
-import { MailListItem } from "./mail-list-item";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await requireUserId(request);
 
-  const { mails } = await getAllMails();
+  const { error, users } = await getAllUsers(userId);
 
-  if (mails) return json({ mails });
+  if (users) return json({ users });
 
-  return json({ userId, mails: [] });
+  return json({ userId, users: [], error });
 };
 
-export default function MailsLayout() {
+export default function UsersLayout() {
   const location = useLocation();
-  const hideParent = location.pathname !== "/desk/mailbox";
-  const { mails } = useLoaderData<typeof loader>();
+  const hideParent = location.pathname !== "/desk/users";
+  const { users } = useLoaderData<typeof loader>();
 
   return (
     <div className="flex h-full overflow-hidden">
       <div
-        className={cn("w-full flex-col border-r flex md:w-72", {
-          "md:flex hidden": hideParent,
+        className={cn("flex w-full flex-col border-r md:w-72", {
+          "hidden md:flex": hideParent,
         })}
       >
         <div className="flex items-center justify-between p-2">
-          <p className="font-outfit font-medium">Mails</p>
+          <p className="font-outfit font-medium">Users</p>
           <div className="flex items-center">
+            <Link to="new">
+              <ActionButton icon={Edit} tooltip="Add user" />
+            </Link>
             <ActionButton icon={MoreVertical} tooltip="Show menu" />
           </div>
         </div>
         <Separator />
-        {mails.length > 0 ? (
+        {users.length > 0 ? (
           <div className="flex-1 space-y-1 overflow-y-auto">
-            {mails.map((mail) => (
-              <MailListItem
-                key={mail._id.toString()}
-                name={mail.name}
-                to={mail._id.toString()}
+            {users.map((user) => (
+              <NavListItem
+                key={user._id.toString()}
+                label={user.name}
+                to={user._id.toString()}
               />
             ))}
           </div>
         ) : (
-          <div className="h-full flex justify-center items-center p-2">
-            <p>No mails found</p>
+          <div className="flex h-full items-center justify-center p-2">
+            <p>No users found</p>
           </div>
         )}
       </div>

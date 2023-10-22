@@ -4,26 +4,26 @@ import { Link, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { Edit, MoreVertical } from "lucide-react";
 import { ActionButton } from "~/components/action-button";
 import { ErrorBoundaryComponent } from "~/components/error-boundary";
+import { NavListItem } from "~/components/nav-list-item";
 import { Separator } from "~/components/ui/separator";
-import { getAllProducts } from "~/dao/products.server";
+import { getAllTestimonials } from "~/dao/testimonials.server";
 import { requireUserId } from "~/lib/session.server";
 import { cn } from "~/lib/utils";
-import { ProductListItem } from "./product-list-item";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await requireUserId(request);
 
-  const { products } = await getAllProducts();
+  const { testimonials } = await getAllTestimonials();
 
-  if (products) return json({ products });
+  if (testimonials) return json({ testimonials });
 
-  return json({ userId, products: [] });
+  return json({ userId, testimonials: [] });
 };
 
-export default function ProductsLayout() {
+export default function TestimonysLayout() {
   const location = useLocation();
-  const hideParent = location.pathname !== "/desk/products";
-  const { products } = useLoaderData<typeof loader>();
+  const hideParent = location.pathname !== "/desk/testimonials";
+  const { testimonials } = useLoaderData<typeof loader>();
 
   return (
     <div className="flex h-full overflow-hidden">
@@ -33,7 +33,7 @@ export default function ProductsLayout() {
         })}
       >
         <div className="flex items-center justify-between p-2">
-          <p className="font-outfit font-medium">Products</p>
+          <p className="font-outfit font-medium">Testimonials</p>
           <div className="flex items-center">
             <Link to="new">
               <ActionButton icon={Edit} tooltip="Add testimony" />
@@ -42,19 +42,19 @@ export default function ProductsLayout() {
           </div>
         </div>
         <Separator />
-        {products.length > 0 ? (
+        {testimonials.length > 0 ? (
           <div className="flex-1 space-y-1 overflow-y-auto">
-            {products.map((testimony) => (
-              <ProductListItem
+            {testimonials.map((testimony) => (
+              <NavListItem
                 key={testimony._id.toString()}
-                title={testimony.title}
+                label={testimony.name}
                 to={testimony._id.toString()}
               />
             ))}
           </div>
         ) : (
           <div className="flex h-full items-center justify-center p-2">
-            <p>No products found</p>
+            <p>No testimonials found</p>
           </div>
         )}
       </div>
