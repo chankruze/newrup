@@ -23,16 +23,20 @@ export const getProduct = async (id: string) => {
   return { ok: true, product: _product };
 };
 
-export const getAllProducts = async () => {
+export const getAllProducts = async (count?: number) => {
   const _db = await client.db(process.env.NEWRUP_DB);
 
-  const _products = await _db
-    .collection(PRODUCTS_COLLECTION)
-    .find({})
-    .sort({ name: 1, updatedAt: -1 })
-    .toArray();
-
-  return { ok: true, products: _products };
+  try {
+    const _products = await _db
+      .collection(PRODUCTS_COLLECTION)
+      .find({})
+      .sort({ name: 1, updatedAt: -1 })
+      .limit(count ? count : 0)
+      .toArray();
+    return { ok: true, products: _products };
+  } catch (error) {
+    return { ok: false, error };
+  }
 };
 
 export const createProduct = async (productInfo: FormData) => {

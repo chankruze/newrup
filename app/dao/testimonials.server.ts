@@ -69,7 +69,7 @@ export const createTestimony = async (testimonyInfo: FormData) => {
 
 export const updateTestimony = async (
   testimonyId: string,
-  testimonyInfo: FormData
+  testimonyInfo: FormData,
 ) => {
   const sectionSchema = z.object({
     name: z.string().min(1, "Name must not be empty."),
@@ -116,7 +116,7 @@ export const updateTestimony = async (
       .collection(TESTIMONIALS_COLLECTION)
       .updateOne(
         { _id: new ObjectId(testimonyId) },
-        { $set: { ...updatedRecord, updatedAt: new Date() } }
+        { $set: { ...updatedRecord, updatedAt: new Date() } },
       );
 
     if (updateQuery.matchedCount === 0) {

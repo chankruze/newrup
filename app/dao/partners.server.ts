@@ -33,13 +33,17 @@ export const getPartner = async (id: string) => {
 export const getAllPartners = async () => {
   const _db = await client.db(process.env.NEWRUP_DB);
 
-  const _partners = await _db
-    .collection(PARTNERS_COLLECTION)
-    .find({})
-    .sort({ name: 1, updatedAt: -1 })
-    .toArray();
+  try {
+    const _partners = await _db
+      .collection(PARTNERS_COLLECTION)
+      .find({})
+      .sort({ name: 1, updatedAt: -1 })
+      .toArray();
 
-  return { ok: true, partners: _partners };
+    return { ok: true, partners: _partners };
+  } catch (error) {
+    return { ok: false, error };
+  }
 };
 
 export const createPartner = async (data: any) => {

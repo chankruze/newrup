@@ -68,7 +68,7 @@ export const contactDetails = [
     value: ["+91-8144356767", "+91-8144356767"],
   },
   {
-    name: "Text",
+    name: "WhatsApp",
     href: `https://wa.me/918144356767`,
     icon: MessageCircle,
     value: ["+91-8144356767"],

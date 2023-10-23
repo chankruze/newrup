@@ -1,10 +1,9 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
-import { ArrowRight } from "lucide-react";
-import { SocialLink } from "~/components/social-links";
-import { SITE_DESCRIPTION, SITE_TITLE, socialLinks } from "~/consts";
+import { useLoaderData } from "@remix-run/react";
+import { SITE_DESCRIPTION, SITE_TITLE } from "~/consts";
 import { getAllPartners } from "~/dao/partners.server";
+import { getAllProducts } from "~/dao/products.server";
 import { getAllTestimonials } from "~/dao/testimonials.server";
 import { client } from "~/lib/db.server";
 import { StatsCard } from "./StatsCard";
@@ -27,15 +26,18 @@ export const loader = async (_: LoaderFunctionArgs) => {
   const carousel = await _db.collection("carousels").findOne({
     domId: "hero-carousel",
   });
+
   const testimonialsSection = await _db.collection("sections").findOne({
     title: "Testimonials",
   });
 
   const { testimonials } = await getAllTestimonials();
   const { partners } = await getAllPartners();
+  const { products } = await getAllProducts(3);
 
   return json({
     carousel,
+    products,
     partners,
     testimonials: {
       data: testimonials,
@@ -45,61 +47,73 @@ export const loader = async (_: LoaderFunctionArgs) => {
 };
 
 export default function Home() {
-  const { carousel, partners, testimonials } = useLoaderData<typeof loader>();
+  const { carousel, products, partners, testimonials } =
+    useLoaderData<typeof loader>();
 
   return (
-    <main className="max-w-8xl mx-auto p-[5vw]">
-      <header className="relative mx-auto flex max-w-7xl flex-wrap justify-between gap-12 sm:gap-16 py-12">
-        {/* left */}
-        <div className="flex flex-col gap-4 lg:pt-12">
-          <p className="font-roboto-mono text-4xl text-zinc-500 dark:text-zinc-400">
-            We're
-          </p>
-          <h1 className="font-outfit text-7xl font-black">
-            Newrup Tech <br /> Solutions
-          </h1>
-          <div className="h-2 w-64 bg-blue-400 dark:bg-yellow-400"></div>
-          <p className="max-w-md font-outfit text-xl text-zinc-500 dark:text-zinc-400">
-            {SITE_DESCRIPTION}
-          </p>
-        </div>
-        {/* right */}
-        <div className="z-10 order-2 flex flex-col gap-4">
-          <p className="font-outfit text-xl font-medium dark:text-zinc-300 sm:max-w-sm sm:text-2xl lg:max-w-md">
-            Let's build quality products and solve some real world problems with
-            our services.
-          </p>
-          <Link
-            to="#services"
-            className="flex items-center gap-2 font-outfit font-medium text-blue-500 dark:text-yellow-400 sm:text-lg"
-          >
-            <span>Read More</span>
-            <span>
-              <ArrowRight className="h-6 w-6" />
-            </span>
-          </Link>
-          <div className="flex items-center justify-center gap-4 sm:justify-start lg:justify-end">
-            {socialLinks.slice(0, 5).map((link) => (
-              <SocialLink key={link.name} {...link} />
-            ))}
-          </div>
-        </div>
-      </header>
+    <main className="max-w-8xl mx-auto px-[5vw]">
       {carousel ? (
-        <section className="mx-auto flex max-w-7xl flex-wrap justify-between gap-4 space-y-4 py-24">
+        <section className="mx-auto flex max-w-7xl flex-wrap justify-between gap-4 space-y-4">
           <ImageCarousel images={carousel.images} />
         </section>
       ) : null}
+
+      {/* products */}
+      {products ? (
+        <section id="products" className="mx-auto max-w-7xl space-y-4 py-12">
+          <div className="space-y-2">
+            <h1 className="font-outfit text-3xl font-bold capitalize sm:text-4xl">
+              Our Products
+            </h1>
+            <h2 className="text-lg font-medium capitalize  text-muted-foreground sm:text-xl">
+              These are the products we offer!
+            </h2>
+          </div>
+          <div className="pt-6">
+            {products.map((product) => (
+              <div
+                key={product.title}
+                className="w-full max-w-md rounded-lg border p-6 shadow-lg"
+              >
+                <img
+                  src={product.image}
+                  alt={product.title}
+                  className="h-48 w-full rounded-md object-cover"
+                  loading="lazy"
+                />
+                <h2 className="mt-4 font-outfit text-xl font-medium">
+                  {product.title}
+                </h2>
+                <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
+                  {product.description}
+                </p>
+                <a
+                  href={product.video}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-4 block cursor-pointer rounded-lg bg-primary py-3 text-center font-semibold text-primary-foreground transition-colors duration-300 ease-in-out hover:bg-primary/80"
+                >
+                  Watch Video
+                </a>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       {/* partners */}
-      <section
-        id="partners"
-        className="mx-auto flex max-w-7xl flex-wrap justify-between gap-4 space-y-4 py-12"
-      >
-        <h1 className="font-outfit text-3xl font-bold capitalize sm:text-4xl">
-          Our Partners
-        </h1>
-        <Partners partners={partners} />
-      </section>
+      {partners ? (
+        <section
+          id="partners"
+          className="mx-auto flex max-w-7xl flex-wrap justify-between gap-4 space-y-4 py-12"
+        >
+          <h1 className="font-outfit text-3xl font-bold capitalize sm:text-4xl">
+            Our Partners
+          </h1>
+          <Partners partners={partners} />
+        </section>
+      ) : null}
+
       {/* stats */}
       <section
         id="services"

@@ -13,10 +13,6 @@ export const navLinks: NavLink[] = [
     label: "Products",
   },
   {
-    to: "portfolio",
-    label: "Portfolio",
-  },
-  {
     to: "certifications",
     label: "Certifications",
   },
