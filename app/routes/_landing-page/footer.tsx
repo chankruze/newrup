@@ -11,24 +11,24 @@ import { navLinks } from "./nav-data";
 
 export const Footer = () => {
   return (
-    <footer className="border-t border-zinc-200 px-[5vw] py-9 dark:border-zinc-700 lg:py-16">
+    <footer className="border-t px-[5vw] py-9 lg:py-16">
       <div className="max-w-8xl mx-auto grid grid-cols-2 gap-12 md:grid-cols-4 xl:grid-cols-8">
         <div className="col-span-2 space-y-6 md:col-span-4">
-          <h1 className="font-outfit text-2xl font-medium text-zinc-950 dark:text-white md:text-4xl">
+          <h1 className="text-title font-outfit text-2xl font-bold md:text-4xl">
             {SITE_TITLE}
           </h1>
-          <p className="max-w-md font-outfit text-xl text-zinc-500 dark:text-zinc-400">
+          <p className="text-subtitle max-w-md font-outfit text-xl">
             {SITE_DESCRIPTION}
           </p>
-          <div className="flex items-center justify-center gap-4 sm:justify-start">
-            {socialLinks.slice(0, 5).map((link) => (
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:justify-start">
+            {socialLinks.slice(0, 6).map((link) => (
               <SocialLink key={link.name} {...link} />
             ))}
           </div>
         </div>
 
         <div className="space-y-6 md:col-start-7">
-          <h1 className="font-outfit text-xl font-medium text-zinc-950 dark:text-white">
+          <h1 className="text-title font-outfit text-xl font-medium">
             Reach Us
           </h1>
           <ul className="space-y-4">
@@ -47,9 +47,7 @@ export const Footer = () => {
           </ul>
         </div>
         <div className="space-y-6 md:col-start-8">
-          <h1 className="font-outfit text-xl font-medium text-zinc-950 dark:text-white">
-            Links
-          </h1>
+          <h1 className="text-title font-outfit text-xl font-medium">Links</h1>
           <ul className="space-y-4">
             {navLinks.map((link, idx) => (
               <li key={idx}>

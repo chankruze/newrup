@@ -1,9 +1,7 @@
 import {
-  Facebook,
-  Instagram,
-  Linkedin,
   Mail,
   Map,
+  MapPin,
   MessageCircle,
   Phone,
   Twitter,
@@ -22,60 +20,60 @@ export type SocialLinkType = {
 };
 
 export const socialLinks: SocialLinkType[] = [
-  // {
-  //   name: "GitHub",
-  //   url: "https://github.com/chankruze",
-  //   icon: Github,
-  // },
-  {
-    name: "LinkedIn",
-    url: "https://www.linkedin.com/in/chankruze/",
-    icon: Linkedin,
-  },
   {
     name: "YouTube",
-    url: "https://youtube.com/@geekofia",
+    url: "https://www.youtube.com/@NewrupTechSolutions",
     icon: Youtube,
   },
   {
-    name: "Instagram",
-    url: "https://instagram.com/chankruze",
-    icon: Instagram,
-  },
-  {
     name: "Twitter",
-    url: "https://twitter.com/chankruze",
+    url: "https://twitter.com/NewrupTech",
     icon: Twitter,
   },
   {
-    name: "Facebook",
-    url: "https://facebook.com/chankruze",
-    icon: Facebook,
+    name: "Email",
+    url: `mailto:newruptechsolutions@gmail.com`,
+    icon: Mail,
+  },
+  {
+    name: "Phone",
+    url: `tel:+91-7991080926`,
+    icon: Phone,
+  },
+  {
+    name: "WhatsApp",
+    url: `https://wa.me/+917991080926`,
+    icon: MessageCircle,
+  },
+  {
+    name: "Address",
+    url: "https://goo.gl/maps/1Q5Z1J8Z1Z9Z2JZr9",
+    icon: MapPin,
   },
 ];
 
 export const contactDetails = [
   {
     name: "Email",
-    href: `mailto:chankruze@gmail.com`,
+    url: `mailto:newruptechsolutions@gmail.com`,
     icon: Mail,
-    value: ["chankruze@gmail.com"],
+    value: ["newruptechsolutions@gmail.com"],
   },
   {
     name: "Phone",
-    href: `tel:+91-8144356767`,
+    url: `tel:+91-7991080926`,
     icon: Phone,
-    value: ["+91-8144356767", "+91-8144356767"],
+    value: ["+91-7991080926", "+91-7978369574"],
   },
   {
     name: "WhatsApp",
-    href: `https://wa.me/918144356767`,
+    url: `https://wa.me/+917991080926`,
     icon: MessageCircle,
-    value: ["+91-8144356767"],
+    value: ["+91-7991080926"],
   },
   {
     name: "Address",
-    href: "https://goo.gl/maps/1Q5Z1J8Z1Z9Z2JZr9",
+    url: "https://goo.gl/maps/1Q5Z1J8Z1Z9Z2JZr9",
     icon: Map,
     value: ["OUTR, Ghatikia, Bhubaneswar, Odisha, 751002"],
   },

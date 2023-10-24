@@ -38,21 +38,22 @@ export default function ProductsPage() {
 
   return (
     <main className="max-w-8xl mx-auto p-[5vw]">
-      <section className="mx-auto max-w-7xl space-y-6" id="contact">
+      <section className="mx-auto max-w-7xl space-y-6">
         <div className="space-y-2">
           <h1 className="font-outfit text-3xl font-bold capitalize sm:text-4xl">
             {section.title}
           </h1>
+          <div className="h-1.5 w-48 bg-blue-400 dark:bg-yellow-400"></div>
           {section.subtitle ? (
-            <h2 className="text-lg font-medium capitalize  text-muted-foreground sm:text-xl">
+            <h2 className="text-lg font-medium capitalize text-muted-foreground sm:text-xl">
               {section.subtitle}
             </h2>
           ) : null}
         </div>
-        <div className="w-full space-y-4 sm:flex-1">
+        <div className="text-description w-full space-y-4 sm:flex-1">
           <p className="text-lg">{section.description}</p>
         </div>
-        {products.length > 0 ? (
+        {products && products.length > 0 ? (
           <div className="grid gap-4 border-t py-6 md:grid-cols-2 lg:grid-cols-3">
             {products.map((product) => (
               <div

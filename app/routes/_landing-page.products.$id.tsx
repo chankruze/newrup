@@ -34,6 +34,7 @@ export default function ProductsPage() {
         <h1 className="font-outfit text-3xl font-bold capitalize sm:text-4xl">
           {product.title}
         </h1>
+        <div className="h-1.5 w-48 bg-blue-400 dark:bg-yellow-400"></div>
         <div className="flex flex-wrap justify-between gap-4">
           <div className="w-full space-y-4 sm:flex-1">
             <p className="max-w-lg text-xl text-zinc-500 dark:text-zinc-400">

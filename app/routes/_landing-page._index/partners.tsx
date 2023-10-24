@@ -19,27 +19,20 @@ export const Partners = ({ partners }: Props) => {
       slidesPerView={partners.length >= 5 ? 5 : partners.length}
       modules={[Autoplay]}
       loop={true}
+      breakpoints={{
+        0: {
+          slidesPerView: 1,
+        },
+        400: {
+          slidesPerView: 2,
+        },
+        639: {
+          slidesPerView: 4,
+        },
+      }}
     >
       {partners.map((partner) => (
-        <SwiperSlide key={partner.name} className="h-24">
-          <img
-            src={partner.image}
-            alt={partner.name}
-            className="block w-full object-cover"
-          />
-        </SwiperSlide>
-      ))}
-      {partners.map((partner) => (
-        <SwiperSlide key={partner.name} className="h-24">
-          <img
-            src={partner.image}
-            alt={partner.name}
-            className="block w-full object-cover"
-          />
-        </SwiperSlide>
-      ))}
-      {partners.map((partner) => (
-        <SwiperSlide key={partner.name} className="h-24">
+        <SwiperSlide key={partner.name} className="h-28">
           <img
             src={partner.image}
             alt={partner.name}

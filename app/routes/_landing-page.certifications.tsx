@@ -43,6 +43,7 @@ export default function CertificationsPage() {
           <h1 className="font-outfit text-3xl font-bold capitalize sm:text-4xl">
             {section.title}
           </h1>
+          <div className="h-1.5 w-48 bg-blue-400 dark:bg-yellow-400"></div>
           {section.subtitle ? (
             <h2 className="text-lg font-medium capitalize  text-muted-foreground sm:text-xl">
               {section.subtitle}

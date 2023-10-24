@@ -20,7 +20,6 @@ export const Testimonials = ({ testimonials }: Props) => {
       slidesPerView={3}
       modules={[Autoplay]}
       loop={true}
-      className="flex flex-wrap"
       breakpoints={{
         0: {
           slidesPerView: 1,
