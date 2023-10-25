@@ -7,6 +7,8 @@ import {
 } from "@remix-run/node";
 import { Form, useNavigate, useNavigation } from "@remix-run/react";
 import { X } from "lucide-react";
+import type { ChangeEvent } from "react";
+import { useState } from "react";
 import { ActionButton } from "~/components/action-button";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -15,6 +17,7 @@ import { Textarea } from "~/components/ui/textarea";
 import { SITE_DESCRIPTION, SITE_TITLE } from "~/consts";
 import { createSection } from "~/dao/sections.server";
 import { uploadHandler } from "~/lib/upload.server";
+import { generateSlug } from "~/utils/generate-slug";
 
 export const meta: MetaFunction = () => {
   return [
@@ -65,10 +68,18 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export default function SectionNewPage() {
   const navigate = useNavigate();
   const { state } = useNavigation();
+  const [domId, setDomId] = useState("");
 
   const busy = state === "submitting";
 
   const back = () => navigate("/desk/sections");
+
+  const generateDomId = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target) {
+      const _domId = generateSlug(e.target.value);
+      setDomId(_domId);
+    }
+  };
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden">
@@ -85,7 +96,23 @@ export default function SectionNewPage() {
           >
             <div className="grid w-full items-center gap-2">
               <Label htmlFor="title">Title</Label>
-              <Input type="text" id="title" name="title" required />
+              <Input
+                type="text"
+                id="title"
+                name="title"
+                onChange={generateDomId}
+                required
+              />
+            </div>
+            <div className="grid w-full items-center gap-2">
+              <Label htmlFor="domId">DOM Id</Label>
+              <Input
+                type="text"
+                id="domId"
+                name="domId"
+                value={domId}
+                required
+              />
             </div>
             <div className="grid w-full items-center gap-2">
               <Label htmlFor="subtitle">Sub Title</Label>

@@ -30,7 +30,7 @@ export const ImageCarousel = ({ images }: Props) => {
           <img
             src={image}
             alt={image}
-            className="block h-full mx-auto object-cover"
+            className="block h-full w-full mx-auto object-cover"
           />
         </SwiperSlide>
       ))}

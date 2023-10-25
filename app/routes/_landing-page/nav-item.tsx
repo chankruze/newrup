@@ -11,13 +11,11 @@ export const NavItem = ({ to, label }: NavItemProps) => {
     <li className="flex">
       <NavLink
         to={to}
-        className={({ isActive, isPending }) =>
+        className={({ isActive }) =>
           cn(
-            "flex flex-1 items-center justify-between p-2 font-outfit font-medium transition-all duration-300",
+            "hover-underline-animation duration-250 font-outfit text-xl font-medium",
             {
-              "text-blue-500": isActive,
-              "hover:opacity-80": !isActive,
-              "text-red-400": isPending,
+              underline: isActive,
             },
           )
         }

@@ -35,7 +35,7 @@ export const Footer = () => {
             {contactDetails.map((link, idx) => (
               <li key={idx}>
                 <a
-                  href={link.href}
+                  href={link.url}
                   className="hover-underline-animation font-outfit text-lg text-zinc-500 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white sm:text-xl"
                   target="_blank"
                   rel="noreferrer"

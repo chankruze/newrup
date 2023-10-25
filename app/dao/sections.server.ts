@@ -8,6 +8,7 @@ const SECTIONS_COLLECTION = "sections";
 
 const sectionSchema = z.object({
   title: z.string().min(1, "Title must not be empty."),
+  domId: z.string().min(1, "DOM ID must not be empty."),
   subtitle: z.string().optional(),
   image: z.any().nullable(),
   description: z.string().min(1, "Description must not be empty."),
@@ -37,6 +38,7 @@ export const getAllSections = async () => {
 
 export type SectionInfo = {
   title: string;
+  domId: string;
   subtitle: string;
   description: string;
   image: string | null;
@@ -93,6 +95,10 @@ export const updateSection = async (
 
   if (_validation.data.title !== undefined) {
     updatedRecord.title = _validation.data.title;
+  }
+
+  if (_validation.data.domId !== undefined) {
+    updatedRecord.domId = _validation.data.domId;
   }
 
   if (_validation.data.subtitle !== undefined) {

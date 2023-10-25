@@ -14,6 +14,7 @@ import { Textarea } from "~/components/ui/textarea";
 import { updateSection } from "~/dao/sections.server";
 import { uploadHandler } from "~/lib/upload.server";
 import { extractFileNameFromUrl } from "~/utils/extract-filename";
+import { generateSlug } from "~/utils/generate-slug";
 import type { SectionLoader } from "./desk.sections.$id";
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
@@ -60,6 +61,7 @@ export default function SectionEditPage() {
 
   const [formData, setFormData] = useState({
     title: section.title || "",
+    domId: section.domId || "",
     subtitle: section.subtitle || "",
     description: section.description || "",
   });
@@ -71,6 +73,14 @@ export default function SectionEditPage() {
       ...data,
       [e.target.name]: e.target.value,
     }));
+
+    if (e.target.name === "title") {
+      const _domId = generateSlug(e.target.value);
+      setFormData((data) => ({
+        ...data,
+        domId: _domId,
+      }));
+    }
   };
 
   useEffect(() => {
@@ -95,6 +105,16 @@ export default function SectionEditPage() {
               name="title"
               onChange={onChangeHandler}
               value={formData.title}
+            />
+          </div>
+          <div className="grid w-full items-center gap-2">
+            <Label htmlFor="domId">DOM Id</Label>
+            <Input
+              type="text"
+              id="domId"
+              name="domId"
+              onChange={onChangeHandler}
+              value={formData.domId}
             />
           </div>
           <div className="grid w-full items-center gap-2">

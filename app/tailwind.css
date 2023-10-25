@@ -37,6 +37,9 @@
     --credits: 217 91.2% 59.8%;
     --credits-foreground: 60 9.1% 97.8%;
 
+    --navbar: 217 91.2% 59.8%;
+    --navbar-foreground: 0 0% 100%;
+
     --title: 217 91.2% 59.8%;
   }
 
@@ -72,7 +75,8 @@
     --credits: 43 96.4% 56.3%;
     --credits-foreground: 24 9.8% 10%;
 
-    --title: 43 96.4% 56.3%;
+    /* --title: 43 96.4% 56.3%; */
+    --navbar: 43 96.4% 56.3%;
   }
 }
 
@@ -83,6 +87,6 @@
 
   html,
   body {
-    @apply h-full w-full bg-background text-foreground antialiased transition-colors duration-1000 ease-in-out;
+    @apply h-full w-full bg-background font-roboto text-foreground antialiased transition-colors duration-1000 ease-in-out;
   }
 }

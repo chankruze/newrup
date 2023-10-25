@@ -37,12 +37,12 @@ export const socialLinks: SocialLinkType[] = [
   },
   {
     name: "Phone",
-    url: `tel:+91-7991080926`,
+    url: `tel:+919337157249`,
     icon: Phone,
   },
   {
     name: "WhatsApp",
-    url: `https://wa.me/+917991080926`,
+    url: `https://wa.me/+919337157249`,
     icon: MessageCircle,
   },
   {
@@ -61,20 +61,22 @@ export const contactDetails = [
   },
   {
     name: "Phone",
-    url: `tel:+91-7991080926`,
+    url: `tel:+919337157249`,
     icon: Phone,
-    value: ["+91-7991080926", "+91-7978369574"],
+    value: ["+919337157249"],
   },
   {
     name: "WhatsApp",
-    url: `https://wa.me/+917991080926`,
+    url: `https://wa.me/+919337157249`,
     icon: MessageCircle,
-    value: ["+91-7991080926"],
+    value: ["+919337157249"],
   },
   {
     name: "Address",
     url: "https://goo.gl/maps/1Q5Z1J8Z1Z9Z2JZr9",
     icon: Map,
-    value: ["OUTR, Ghatikia, Bhubaneswar, Odisha, 751002"],
+    value: [
+      "Innovation Corridor, OUTR University, Ghatikia, Bhubaneswar, Odisha 751003",
+    ],
   },
 ];

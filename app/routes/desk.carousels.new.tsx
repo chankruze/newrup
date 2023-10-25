@@ -124,7 +124,13 @@ export default function NewCarouselPage() {
             </div>
             <div className="grid w-full items-center gap-2">
               <Label htmlFor="domId">DOM Id</Label>
-              <Input type="text" id="domId" name="domId" value={domId} />
+              <Input
+                type="text"
+                id="domId"
+                name="domId"
+                value={domId}
+                required
+              />
             </div>
             <div className="grid w-full items-center gap-2">
               <Label htmlFor="description">Description</Label>

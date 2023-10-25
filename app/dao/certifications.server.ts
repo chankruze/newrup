@@ -10,7 +10,7 @@ const certificationSchema = z.object({
   name: z.string().min(1, "Name must not be empty."),
   description: z.string().min(1, "Description must not be empty."),
   image: z.any().nullable(),
-  link: z.string().min(1, "Link must not be empty."),
+  link: z.string().optional(),
 });
 
 export const getCertification = async (id: string) => {

@@ -57,6 +57,10 @@ module.exports = {
           DEFAULT: "hsl(var(--credits))",
           foreground: "hsl(var(--credits-foreground))",
         },
+        navbar: {
+          DEFAULT: "hsl(var(--navbar))",
+          foreground: "hsl(var(--navbar-foreground))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

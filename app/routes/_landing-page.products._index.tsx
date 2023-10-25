@@ -3,10 +3,11 @@ import {
   type LoaderFunctionArgs,
   type MetaFunction,
 } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import { SITE_DESCRIPTION, SITE_TITLE } from "~/consts";
 import { getAllProducts } from "~/dao/products.server";
 import { client } from "~/lib/db.server";
+import { ProductCard } from "../components/product-card";
 
 export const meta: MetaFunction = () => {
   return [
@@ -37,48 +38,26 @@ export default function ProductsPage() {
   if (!section) return null;
 
   return (
-    <main className="max-w-8xl mx-auto p-[5vw]">
+    <main className="max-w-8xl mx-auto mt-16 p-[5vw] sm:mt-4">
       <section className="mx-auto max-w-7xl space-y-6">
         <div className="space-y-2">
-          <h1 className="font-outfit text-3xl font-bold capitalize sm:text-4xl">
+          <h1 className="font-outfit text-3xl font-bold uppercase text-title sm:text-4xl">
             {section.title}
           </h1>
           <div className="h-1.5 w-48 bg-blue-400 dark:bg-yellow-400"></div>
           {section.subtitle ? (
-            <h2 className="text-lg font-medium capitalize text-muted-foreground sm:text-xl">
+            <h2 className="font-poppins text-lg font-medium capitalize text-muted-foreground sm:text-xl">
               {section.subtitle}
             </h2>
           ) : null}
         </div>
-        <div className="text-description w-full space-y-4 sm:flex-1">
+        <div className="w-full space-y-4 text-description sm:flex-1">
           <p className="text-lg">{section.description}</p>
         </div>
         {products && products.length > 0 ? (
           <div className="grid gap-4 border-t py-6 md:grid-cols-2 lg:grid-cols-3">
             {products.map((product) => (
-              <div
-                key={product.title}
-                className="w-full max-w-md rounded-lg border p-6 shadow-lg"
-              >
-                <img
-                  src={product.image}
-                  alt={product.title}
-                  className="h-48 w-full rounded-md object-cover"
-                  loading="lazy"
-                />
-                <h2 className="mt-4 font-outfit text-xl font-medium">
-                  {product.name}
-                </h2>
-                <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
-                  {product.description}
-                </p>
-                <Link
-                  to={product._id.toString()}
-                  className="mt-4 block cursor-pointer rounded-lg bg-primary py-3 text-center font-semibold text-primary-foreground transition-colors duration-300 ease-in-out hover:bg-primary/80"
-                >
-                  View Product
-                </Link>
-              </div>
+              <ProductCard key={product.title} product={product} />
             ))}
           </div>
         ) : null}

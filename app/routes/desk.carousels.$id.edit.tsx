@@ -8,7 +8,7 @@ import {
 } from "@remix-run/node";
 import { Form, useNavigation, useRouteLoaderData } from "@remix-run/react";
 import type { ChangeEvent } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Input } from "~/components/ui/input";
@@ -114,6 +114,12 @@ export default function CarouselEditPage() {
       }));
     }
   };
+
+  useEffect(() => {
+    setFormData({
+      ...carousel,
+    });
+  }, [carousel]);
 
   return (
     <div className="h-full w-full p-2">

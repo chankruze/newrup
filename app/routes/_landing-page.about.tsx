@@ -33,15 +33,15 @@ export default function AboutPage() {
   if (!section) return null;
 
   return (
-    <main className="max-w-8xl mx-auto p-[5vw]">
+    <main className="max-w-8xl mx-auto mt-16 p-[5vw] sm:mt-4">
       <section className="mx-auto max-w-7xl space-y-6" id="contact">
         <div className="space-y-2">
-          <h1 className="font-outfit text-3xl font-bold capitalize sm:text-4xl">
+          <h1 className="font-outfit text-3xl font-bold uppercase text-title sm:text-4xl">
             {section.title}
           </h1>
-          <div className="h-1.5 w-48 bg-blue-400 dark:bg-yellow-400"></div>
+          <div className="h-1.5 w-full bg-blue-400 dark:bg-yellow-400 sm:w-48"></div>
           {section.subtitle ? (
-            <h2 className="text-lg font-medium capitalize  text-muted-foreground sm:text-xl">
+            <h2 className="text-lg font-medium capitalize  text-muted-foreground sm:text-xl font-poppins">
               {section.subtitle}
             </h2>
           ) : null}

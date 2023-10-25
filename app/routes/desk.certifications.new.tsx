@@ -26,7 +26,7 @@ export const meta: MetaFunction = () => {
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await unstable_parseMultipartFormData(
     request,
-    uploadHandler
+    uploadHandler,
   );
 
   const __action = formData.get("__action");
@@ -73,7 +73,7 @@ export default function NewCertificationPage() {
             </div>
             <div className="grid w-full items-center gap-2">
               <Label htmlFor="link">Document Link</Label>
-              <Input type="text" id="link" name="link" required />
+              <Input type="text" id="link" name="link" />
             </div>
             <div className="grid w-full items-center gap-2">
               <Label htmlFor="image">Thumbnail</Label>
