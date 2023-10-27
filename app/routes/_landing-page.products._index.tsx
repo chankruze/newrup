@@ -21,7 +21,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const _db = await client.db(process.env.NEWRUP_DB);
 
   const section = await _db.collection("sections").findOne({
-    title: "Our Products",
+    domId: "products",
   });
 
   const { products } = await getAllProducts();
@@ -46,7 +46,7 @@ export default function ProductsPage() {
           </h1>
           <div className="h-1.5 w-48 bg-blue-400 dark:bg-yellow-400"></div>
           {section.subtitle ? (
-            <h2 className="font-poppins text-lg font-medium capitalize text-muted-foreground sm:text-xl">
+            <h2 className="text-lg font-medium capitalize text-muted-foreground sm:text-xl italic">
               {section.subtitle}
             </h2>
           ) : null}

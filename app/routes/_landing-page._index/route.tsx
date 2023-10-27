@@ -75,9 +75,11 @@ export default function Home() {
   return (
     <main className="mt-8">
       {carousel ? (
-        <section className="mx-auto mt-8 flex max-w-7xl flex-wrap justify-between gap-4 space-y-4 py-[5vw]">
-          <ImageCarousel images={carousel.images} />
-        </section>
+        <div className="p-[5vw]">
+          <section className="mx-auto mt-8 flex max-w-7xl flex-wrap justify-between gap-4 space-y-4">
+            <ImageCarousel images={carousel.images} />
+          </section>
+        </div>
       ) : null}
 
       {/* products */}
@@ -142,7 +144,7 @@ export default function Home() {
 
       {/* partners */}
       {partners ? (
-        <div className="w-full bg-blue-50/50 p-[5vw]">
+        <div className="w-full p-[5vw]">
           <section id="partners" className="mx-auto max-w-7xl space-y-4">
             {partners.section ? (
               <>

@@ -47,7 +47,7 @@ export const socialLinks: SocialLinkType[] = [
   },
   {
     name: "Address",
-    url: "https://goo.gl/maps/1Q5Z1J8Z1Z9Z2JZr9",
+    url: "https://maps.app.goo.gl/6tW4USUX9whLEXMX7",
     icon: MapPin,
   },
 ];
@@ -73,7 +73,7 @@ export const contactDetails = [
   },
   {
     name: "Address",
-    url: "https://goo.gl/maps/1Q5Z1J8Z1Z9Z2JZr9",
+    url: "https://maps.app.goo.gl/6tW4USUX9whLEXMX7",
     icon: Map,
     value: [
       "Innovation Corridor, OUTR University, Ghatikia, Bhubaneswar, Odisha 751003",
