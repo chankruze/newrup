@@ -23,14 +23,14 @@ export const ImageCarousel = ({ images }: Props) => {
       }}
       navigation={true}
       loop={true}
-      className="w-full lg:h-[480px] overflow-hidden rounded-lg"
+      className="w-full overflow-hidden rounded-lg lg:h-[480px]"
     >
       {images.map((image) => (
         <SwiperSlide key={image} className="bg-cover bg-center">
           <img
             src={image}
             alt={image}
-            className="block lg:h-full w-full mx-auto object-cover"
+            className="mx-auto block w-full object-cover lg:h-full"
           />
         </SwiperSlide>
       ))}

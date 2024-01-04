@@ -11,7 +11,7 @@ import {
   useSubmit,
 } from "@remix-run/react";
 import { format } from "date-fns";
-import { MoreVertical, Trash, X } from "lucide-react";
+import { Clock, MoreVertical, Trash, X } from "lucide-react";
 import { ActionButton } from "~/components/action-button";
 import { ActionTabButton } from "~/components/action-tab-button";
 import {
@@ -21,10 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { SITE_TITLE } from "~/consts";
-import {
-  deleteCertification,
-  getCertification,
-} from "~/dao/certifications.server";
+import { deleteMilestone, getMilestone } from "~/dao/milestones.server";
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
   const formData = await request.formData();
@@ -33,9 +30,9 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
   switch (__action) {
     case "delete": {
-      const { ok, error } = await deleteCertification(params.id as string);
+      const { ok, error } = await deleteMilestone(params.id as string);
 
-      if (ok) return redirect(`/desk/certifications`);
+      if (ok) return redirect(`/desk/milestones`);
 
       return json({ ok: false, error });
     }
@@ -50,45 +47,45 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { id } = params;
 
   if (id) {
-    const { certification } = await getCertification(id);
+    const { milestone } = await getMilestone(id);
 
-    if (certification) return json({ certification });
+    if (milestone) return json({ milestone });
 
-    return json({ certification: null });
+    return json({ milestone: null });
   }
 
-  return json({ certification: null });
+  return json({ milestone: null });
 };
 
-export type CertificationLoader = typeof loader;
+export type MilestoneLoader = Awaited<ReturnType<typeof loader>>;
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
-    { title: `${data?.certification?.name} / ${SITE_TITLE}` },
+    { title: `${data?.milestone?.name} / ${SITE_TITLE}` },
     {
       property: "og:title",
-      content: `${data?.certification?.name} / ${SITE_TITLE}`,
+      content: `${data?.milestone?.name} / ${SITE_TITLE}`,
     },
-    { name: "description", content: `${data?.certification?.description}` },
+    { name: "description", content: `${data?.milestone?.description}` },
   ];
 };
 
-export default function CertificationPage() {
-  const { certification } = useLoaderData<typeof loader>();
+export default function MilestonePage() {
+  const { milestone } = useLoaderData<typeof loader>();
   const submit = useSubmit();
   const navigate = useNavigate();
 
-  const back = () => navigate("/desk/certifications");
+  const back = () => navigate("/desk/milestones");
 
   const _delete = () => submit({ __action: "delete" }, { method: "post" });
 
-  if (certification) {
+  if (milestone) {
     return (
       <div className="flex h-full w-full flex-col overflow-hidden">
         <div className="space-y-1 border-b p-2">
           <div className="flex items-center justify-between">
             <p className="line-clamp-1 font-outfit font-medium">
-              {certification.name}
+              {milestone.name}
             </p>
             <div className="flex items-center">
               <DropdownMenu>
@@ -110,9 +107,11 @@ export default function CertificationPage() {
               <ActionTabButton to="edit" label="Editor" />
               <ActionTabButton to="preview" label="Preview" />
             </div>
-            <div className="text-sm font-medium">
-              Updated:{" "}
-              {format(new Date(certification.updatedAt), "dd-MM-yyyy hh:mm a")}
+            <div className="flex items-center gap-1 text-sm font-medium">
+              <Clock className="h-4 w-4" />
+              <span>
+                {format(new Date(milestone.updatedAt), "dd-MM-yyyy hh:mm a")}
+              </span>
             </div>
           </div>
         </div>
@@ -125,7 +124,7 @@ export default function CertificationPage() {
 
   return (
     <div className="grid h-full w-full place-content-center p-2">
-      <p>Certification not found!</p>
+      <p>Milestone not found!</p>
     </div>
   );
 }
