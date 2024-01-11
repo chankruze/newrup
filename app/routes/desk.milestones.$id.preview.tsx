@@ -10,7 +10,7 @@ export default function MilestonePreviewPage() {
     <div className="grid h-full w-full place-items-center overflow-y-auto p-4">
       <div className="w-full max-w-md rounded-lg border p-6 shadow-lg">
         <h2 className="mt-4 font-outfit text-xl font-medium">
-          {milestone.name}
+          {milestone.title}
         </h2>
         <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">
           {milestone.description}

@@ -7,7 +7,7 @@ import { formToJSON } from "~/utils/form-helper.server";
 const MILESTONES_COLLECTION = "milestones";
 
 const milestoneSchema = z.object({
-  name: z.string().min(1, "Name must not be empty."),
+  title: z.string().min(1, "Title must not be empty."),
   description: z.string().min(1, "Description must not be empty."),
   link: z.string().optional(),
   date: z.string().pipe(z.coerce.date()).optional(),
@@ -91,8 +91,8 @@ export const updateMilestone = async (
   // Create an empty update operation
   const updatedRecord: Record<string, string | Date> = {};
 
-  if (_validation.data.name !== undefined) {
-    updatedRecord.name = _validation.data.name;
+  if (_validation.data.title !== undefined) {
+    updatedRecord.title = _validation.data.title;
   }
 
   if (_validation.data.description !== undefined) {

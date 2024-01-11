@@ -47,7 +47,7 @@ export default function MilestonesLayout() {
             {milestones.map((milestone) => (
               <NavListItem
                 key={milestone._id.toString()}
-                label={milestone.name}
+                label={milestone.title}
                 to={milestone._id.toString()}
               />
             ))}

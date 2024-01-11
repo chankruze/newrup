@@ -61,10 +61,10 @@ export type MilestoneLoader = Awaited<ReturnType<typeof loader>>;
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
-    { title: `${data?.milestone?.name} / ${SITE_TITLE}` },
+    { title: `${data?.milestone?.title} / ${SITE_TITLE}` },
     {
       property: "og:title",
-      content: `${data?.milestone?.name} / ${SITE_TITLE}`,
+      content: `${data?.milestone?.title} / ${SITE_TITLE}`,
     },
     { name: "description", content: `${data?.milestone?.description}` },
   ];

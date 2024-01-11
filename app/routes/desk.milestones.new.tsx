@@ -78,16 +78,16 @@ export default function NewMilestonePage() {
             encType="multipart/form-data"
           >
             <div className="grid w-full items-center gap-2">
-              <Label htmlFor="name">Name</Label>
-              <Input type="text" id="name" name="name" required />
-            </div>
-            <div className="grid w-full items-center gap-2">
-              <Label htmlFor="link">Link</Label>
-              <Input type="text" id="link" name="link" />
+              <Label htmlFor="title">Title</Label>
+              <Input type="text" id="title" name="title" required />
             </div>
             <div className="grid w-full items-center gap-2">
               <Label htmlFor="description">Description</Label>
               <Textarea id="description" name="description" required />
+            </div>
+            <div className="grid w-full items-center gap-2">
+              <Label htmlFor="link">Link</Label>
+              <Input type="text" id="link" name="link" />
             </div>
             <Popover>
               <PopoverTrigger asChild>
