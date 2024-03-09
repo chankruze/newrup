@@ -94,7 +94,7 @@ export default function ContactUsPage() {
   if (!section) return null;
 
   return (
-    <main className="max-w-8xl mx-auto mt-16 sm:mt-4 p-[5vw]">
+    <main className="max-w-8xl mx-auto mt-16 p-[5vw] sm:mt-4">
       <section className="mx-auto max-w-7xl space-y-6" id="contact">
         <div className="space-y-2">
           <h1 className="font-outfit text-3xl font-bold uppercase text-title sm:text-4xl">
@@ -102,7 +102,7 @@ export default function ContactUsPage() {
           </h1>
           <div className="h-1.5 w-48 bg-blue-400 dark:bg-yellow-400"></div>
           {section.subtitle ? (
-            <h2 className="text-lg font-medium capitalize  text-muted-foreground sm:text-xl font-poppins">
+            <h2 className="font-poppins text-lg font-medium  capitalize text-muted-foreground sm:text-xl">
               {section.subtitle}
             </h2>
           ) : null}
@@ -115,7 +115,7 @@ export default function ContactUsPage() {
             <div className="grid place-content-center gap-4 sm:grid-cols-2">
               {contactDetails.map((details) => (
                 <a
-                  href={details.href}
+                  href={details.url}
                   key={details.name}
                   className="flex flex-1 flex-col items-center justify-start gap-4 p-4"
                 >

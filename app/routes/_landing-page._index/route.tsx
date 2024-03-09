@@ -1,7 +1,7 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import { SITE_DESCRIPTION, SITE_TITLE } from "~/consts";
+import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from "~/consts";
 import { getAllPartners } from "~/dao/partners.server";
 import { getAllProducts } from "~/dao/products.server";
 import { getAllTestimonials } from "~/dao/testimonials.server";
@@ -16,8 +16,76 @@ import { Testimonials } from "./testimonials";
 export const meta: MetaFunction = () => {
   return [
     { title: SITE_TITLE },
-    { name: "og:title", content: SITE_TITLE },
+    { name: "title", content: SITE_TITLE },
+    { name: "author", content: SITE_TITLE },
     { name: "description", content: SITE_DESCRIPTION },
+    {
+      property: "twitter:title",
+      content: SITE_TITLE,
+    },
+    {
+      property: "twitter:description",
+      content: SITE_DESCRIPTION,
+    },
+    {
+      property: "twitter:image",
+      content: `${SITE_URL}/logo.png`,
+    },
+    {
+      property: "twitter:creator",
+      content: SITE_TITLE,
+    },
+    {
+      property: "twitter:site",
+      content: SITE_TITLE,
+    },
+    {
+      property: "twitter:summary",
+      content: "summary_large_image",
+    },
+    { property: "og:title", content: SITE_TITLE },
+    { property: "og:description", content: SITE_DESCRIPTION },
+    { property: "og:type", content: "website" },
+    {
+      name: "image",
+      property: "og:image",
+      content: `${SITE_URL}/logo.png`,
+    },
+    {
+      name: "msapplication-TileColor",
+      content: "#da532c",
+    },
+    {
+      tagName: "link",
+      rel: "apple-touch-icon",
+      sizes: "180x180",
+      href: "/apple-touch-icon.png",
+    },
+    {
+      tagName: "link",
+      rel: "icon",
+      type: "image/png",
+      sizes: "32x32",
+      href: "/favicon-32x32.png",
+    },
+    {
+      tagName: "link",
+      rel: "icon",
+      type: "image/png",
+      sizes: "16x16",
+      href: "/favicon-16x16.png",
+    },
+    {
+      tagName: "link",
+      rel: "manifest",
+      href: "/site.webmanifest",
+    },
+    {
+      tagName: "link",
+      rel: "mask-icon",
+      href: "/safari-pinned-tab.svg",
+      color: "#5bbad5",
+    },
   ];
 };
 
