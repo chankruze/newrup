@@ -86,6 +86,11 @@ export const meta: MetaFunction = () => {
       href: "/safari-pinned-tab.svg",
       color: "#5bbad5",
     },
+    {
+      tagName: "link",
+      rel: "canonical",
+      href: `${SITE_URL}/`,
+    },
   ];
 };
 
